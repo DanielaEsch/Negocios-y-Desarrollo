@@ -1,0 +1,24 @@
+# Base de datos local. Los scripts de database/ corren solo la primera vez
+# que se crea el volumen; para reiniciar desde cero: docker compose down -v
+services:
+  postgres:
+    image: postgres:14
+    container_name: rutinas-postgres
+    environment:
+      POSTGRES_DB: rutinas
+      POSTGRES_USER: rutinas
+      POSTGRES_PASSWORD: rutinas
+      TZ: America/Mexico_City
+      PGTZ: America/Mexico_City
+    ports:
+      - "5432:5432"
+    volumes:
+      - rutinas-data:/var/lib/postgresql/data
+      - ./database:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rutinas -d rutinas"]
+      interval: 5s
+      retries: 10
+
+volumes:
+  rutinas-data:
