@@ -3,7 +3,7 @@
 * **Estado**: Aceptado
 * **Fecha**: 2026-09-17
 * **Squad**: Equipo Buzz
-* **Autores**: Alessandre Ibañez Contreras
+* **Autores**: Alessandre Ibañez Contreras - Rojas Cruz Carlo Emir · Escamilla Champala Daniela · Bahena Gorostieta Alejandro · Rodríguez Ruiz Diana Carolina
 
 ## 1. Contexto y Problema
 Tras las entrevistas de validación de mercado, identificamos que nuestra plataforma necesita resolver el control de las rutinas y actividades periódicas por área en micro y pequeñas empresas, y el seguimiento de las incidencias que ocurren en ellas. Requerimos una arquitectura web que nos permita desarrollar ágilmente, garantizar el desacoplamiento entre la lógica de negocio y la infraestructura, y facilitar la integración con servicios externos (notificaciones y almacenamiento de archivos de evidencia).
