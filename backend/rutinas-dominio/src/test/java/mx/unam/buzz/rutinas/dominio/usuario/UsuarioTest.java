@@ -1,5 +1,7 @@
 package mx.unam.buzz.rutinas.dominio.usuario;
 
+import mx.unam.buzz.rutinas.dominio.comun.ReglaNegocioException;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

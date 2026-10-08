@@ -1,5 +1,7 @@
 package mx.unam.buzz.rutinas.dominio.usuario;
 
+import mx.unam.buzz.rutinas.dominio.comun.ReglaNegocioException;
+
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashSet;
