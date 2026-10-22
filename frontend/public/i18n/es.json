@@ -1,0 +1,104 @@
+{
+  "language": {
+    "es": "Español",
+    "en": "Inglés"
+  },
+  "roles": {
+    "OPERADOR": "Operador",
+    "SUPERVISOR": "Supervisor",
+    "ADMINISTRADOR": "Administrador"
+  },
+  "actions": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "close": "Cerrar",
+    "retry": "Reintentar"
+  },
+  "validation": {
+    "required": "Este campo es obligatorio.",
+    "email": "Escribe un correo válido.",
+    "minlength": "Debe tener al menos {{min}} caracteres.",
+    "maxlength": "Admite como máximo {{max}} caracteres."
+  },
+  "errors": {
+    "offline": "No hay conexión con el servidor. Revisa que el backend esté levantado.",
+    "server": "Ocurrió un error en el servidor. Intenta de nuevo en un momento."
+  },
+  "layout": {
+    "menu": "Abrir menú",
+    "language": "Idioma",
+    "theme": "Cambiar tema",
+    "account": "Cuenta",
+    "logout": "Cerrar sesión",
+    "soon": "Próximamente"
+  },
+  "menu": {
+    "home": "Inicio",
+    "areas": "Áreas",
+    "areasDescription": "Las áreas del negocio donde se ejecutan las rutinas.",
+    "routines": "Rutinas",
+    "routinesDescription": "Actividades periódicas por área, con su frecuencia y responsable.",
+    "executions": "Ejecuciones",
+    "executionsDescription": "Cada vez que alguien realiza una rutina, paso a paso.",
+    "incidents": "Incidencias",
+    "incidentsDescription": "Lo que salió mal en una ejecución y su seguimiento."
+  },
+  "login": {
+    "title": "Inicia sesión",
+    "subtitle": "Controla las rutinas e incidencias de tu negocio.",
+    "simulated": "Acceso de demostración: todavía no hay autenticación en el backend. Cualquier correo y una contraseña de 8 caracteres entran con el perfil que elijas.",
+    "email": "Correo",
+    "password": "Contraseña",
+    "show": "Mostrar contraseña",
+    "hide": "Ocultar contraseña",
+    "role": "Perfil",
+    "roleHint": "Define qué puedes hacer en cada pantalla.",
+    "submit": "Entrar"
+  },
+  "home": {
+    "welcome": "Hola, {{name}}",
+    "subtitle": "Elige un módulo para empezar.",
+    "modules": "Módulos",
+    "open": "Abrir"
+  },
+  "table": {
+    "empty": "No hay registros.",
+    "actions": "Acciones"
+  },
+  "areas": {
+    "title": "Áreas",
+    "subtitle": "Las zonas de tu negocio a las que se asignan rutinas.",
+    "new": "Nueva área",
+    "newTitle": "Nueva área",
+    "editTitle": "Editar área",
+    "search": "Buscar por nombre",
+    "empty": "Aún no hay áreas registradas.",
+    "emptySearch": "Ninguna área coincide con la búsqueda.",
+    "fields": {
+      "nombre": "Nombre",
+      "descripcion": "Descripción",
+      "fechaCreacion": "Creada"
+    },
+    "uppercaseNote": "El nombre y la descripción se guardan en mayúsculas.",
+    "created": "Área creada.",
+    "updated": "Área actualizada.",
+    "deleted": "Área eliminada.",
+    "deleteTitle": "Eliminar área",
+    "deleteMessage": "¿Eliminar el área {{name}}? Dejará de aparecer en el catálogo."
+  },
+  "notFound": {
+    "message": "La página que buscas no existe.",
+    "back": "Volver al inicio"
+  },
+  "paginator": {
+    "itemsPerPage": "Registros por página",
+    "next": "Página siguiente",
+    "previous": "Página anterior",
+    "first": "Primera página",
+    "last": "Última página",
+    "range": "{{start}} – {{end}} de {{length}}",
+    "empty": "0 de 0"
+  }
+}

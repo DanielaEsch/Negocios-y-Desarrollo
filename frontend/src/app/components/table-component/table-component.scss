@@ -1,0 +1,42 @@
+.table-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--mat-sys-corner-large);
+  background: var(--mat-sys-surface-container-lowest);
+  border: 1px solid var(--mat-sys-outline-variant);
+}
+
+.table-card__progress {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 4px;
+  z-index: 2;
+}
+
+.table-card__scroll {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  background: transparent;
+}
+
+.cell--number {
+  text-align: right;
+}
+
+.cell--empty {
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.cell--actions {
+  width: 1%;
+  white-space: nowrap;
+  text-align: right;
+}
+
+mat-paginator {
+  background: transparent;
+  border-top: 1px solid var(--mat-sys-outline-variant);
+}

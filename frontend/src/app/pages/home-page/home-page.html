@@ -1,0 +1,26 @@
+<app-page-header-component
+  [title]="'home.welcome' | translate: { name: auth.session()?.nombre }"
+  [subtitle]="'home.subtitle' | translate"
+/>
+
+<section class="modules" [attr.aria-label]="'home.modules' | translate">
+  @for (item of modules; track item.route) {
+    @if (item.soon) {
+      <div class="module module--soon" aria-disabled="true">
+        <mat-icon class="module__icon" aria-hidden="true">{{ item.icon }}</mat-icon>
+        <h2 class="module__title">{{ item.labelKey | translate }}</h2>
+        <p class="module__text">{{ item.labelKey + 'Description' | translate }}</p>
+        <span class="module__badge">{{ 'layout.soon' | translate }}</span>
+      </div>
+    } @else {
+      <a class="module" [routerLink]="item.route">
+        <mat-icon class="module__icon" aria-hidden="true">{{ item.icon }}</mat-icon>
+        <h2 class="module__title">{{ item.labelKey | translate }}</h2>
+        <p class="module__text">{{ item.labelKey + 'Description' | translate }}</p>
+        <span class="module__link">
+          {{ 'home.open' | translate }} <mat-icon aria-hidden="true">arrow_forward</mat-icon>
+        </span>
+      </a>
+    }
+  }
+</section>

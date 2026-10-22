@@ -1,0 +1,63 @@
+<main class="login">
+  <section class="login__card" aria-labelledby="login-title">
+    <app-brand-component size="large" />
+
+    <h1 id="login-title" class="login__title">{{ 'login.title' | translate }}</h1>
+    <p class="login__subtitle">{{ 'login.subtitle' | translate }}</p>
+
+    <div class="login__notice" role="note">
+      <mat-icon aria-hidden="true">info</mat-icon>
+      <span>{{ 'login.simulated' | translate }}</span>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'login.email' | translate }}</mat-label>
+        <input matInput type="email" formControlName="correo" autocomplete="username" />
+        @if (form.controls.correo.hasError('required')) {
+          <mat-error>{{ 'validation.required' | translate }}</mat-error>
+        } @else if (form.controls.correo.hasError('email')) {
+          <mat-error>{{ 'validation.email' | translate }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'login.password' | translate }}</mat-label>
+        <input
+          matInput
+          [type]="hidePassword() ? 'password' : 'text'"
+          formControlName="contrasena"
+          autocomplete="current-password"
+        />
+        <button
+          mat-icon-button
+          matSuffix
+          type="button"
+          [attr.aria-label]="(hidePassword() ? 'login.show' : 'login.hide') | translate"
+          (click)="hidePassword.set(!hidePassword())"
+        >
+          <mat-icon>{{ hidePassword() ? 'visibility' : 'visibility_off' }}</mat-icon>
+        </button>
+        @if (form.controls.contrasena.hasError('required')) {
+          <mat-error>{{ 'validation.required' | translate }}</mat-error>
+        } @else if (form.controls.contrasena.hasError('minlength')) {
+          <mat-error>{{ 'validation.minlength' | translate: { min: 8 } }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'login.role' | translate }}</mat-label>
+        <mat-select formControlName="rol">
+          @for (rol of roles; track rol) {
+            <mat-option [value]="rol">{{ 'roles.' + rol | translate }}</mat-option>
+          }
+        </mat-select>
+        <mat-hint>{{ 'login.roleHint' | translate }}</mat-hint>
+      </mat-form-field>
+
+      <button mat-flat-button type="submit" class="login__submit" [disabled]="submitting()">
+        {{ 'login.submit' | translate }}
+      </button>
+    </form>
+  </section>
+</main>

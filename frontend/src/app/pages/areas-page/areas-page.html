@@ -1,0 +1,44 @@
+<app-page-header-component
+  [title]="'areas.title' | translate"
+  [subtitle]="'areas.subtitle' | translate"
+>
+  @if (canEdit()) {
+    <button mat-flat-button type="button" (click)="openForm()">
+      <mat-icon>add</mat-icon>
+      {{ 'areas.new' | translate }}
+    </button>
+  }
+</app-page-header-component>
+
+<div class="filters">
+  <mat-form-field appearance="outline" subscriptSizing="dynamic" class="filters__search">
+    <mat-label>{{ 'areas.search' | translate }}</mat-label>
+    <mat-icon matIconPrefix>search</mat-icon>
+    <input matInput type="search" [formControl]="search" />
+  </mat-form-field>
+</div>
+
+@if (store.error(); as error) {
+  <div class="alert" role="alert">
+    <mat-icon aria-hidden="true">error</mat-icon>
+    <span>{{ error }}</span>
+    <button mat-button type="button" (click)="store.load()">
+      {{ 'actions.retry' | translate }}
+    </button>
+  </div>
+}
+
+<app-table-component
+  [config]="config()"
+  [data]="store.items()"
+  [total]="store.total()"
+  [pageIndex]="store.pageIndex()"
+  [pageSize]="store.pageSize()"
+  [loading]="store.loading()"
+  [sortActive]="store.sort().active"
+  [sortDirection]="store.sort().direction === 'ASC' ? 'asc' : 'desc'"
+  [emptyMessage]="search.value ? 'areas.emptySearch' : 'areas.empty'"
+  (action)="onAction($event)"
+  (pageChange)="onPage($event)"
+  (sortChange)="store.changeSort($event)"
+/>
