@@ -132,7 +132,12 @@ class AreaControllerTest {
                 .andExpect(jsonPath("$.paths['/areas']").exists())
                 .andExpect(jsonPath("$.components.schemas.CreateAreaRequestVO.required[0]").value("nombre"))
                 .andExpect(jsonPath("$.components.schemas.CreateAreaRequestVO.properties.nombre.maxLength").value(100))
-                .andExpect(jsonPath("$.paths['/areas'].post.responses['201']").exists())
-                .andExpect(jsonPath("$.paths['/areas'].post.responses['409'].content['application/problem+json']").exists());
+                .andExpect(jsonPath("$.paths['/areas'].post.responses['201'].content['application/json'].schema['$ref']")
+                        .value("#/components/schemas/SingleResponseVOAreaResponseVO"))
+                .andExpect(jsonPath("$.components.schemas.AreaResponseVO.properties.nombre.example").value("COCINA"))
+                .andExpect(jsonPath("$.paths['/areas'].post.responses['400'].content['application/problem+json']"
+                        + ".examples['Nombre vacio'].value.invalid_params[0].name").value("nombre"))
+                .andExpect(jsonPath("$.paths['/areas'].post.responses['409'].content['application/problem+json']").exists())
+                .andExpect(jsonPath("$.paths['/areas/{id}'].delete.responses['400']").exists());
     }
 }
