@@ -1,0 +1,104 @@
+{
+  "language": {
+    "es": "Spanish",
+    "en": "English"
+  },
+  "roles": {
+    "OPERADOR": "Operator",
+    "SUPERVISOR": "Supervisor",
+    "ADMINISTRADOR": "Administrator"
+  },
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "retry": "Retry"
+  },
+  "validation": {
+    "required": "This field is required.",
+    "email": "Enter a valid email.",
+    "minlength": "Must be at least {{min}} characters.",
+    "maxlength": "Must be at most {{max}} characters."
+  },
+  "errors": {
+    "offline": "Cannot reach the server. Check that the backend is running.",
+    "server": "Something went wrong on the server. Try again in a moment."
+  },
+  "layout": {
+    "menu": "Open menu",
+    "language": "Language",
+    "theme": "Toggle theme",
+    "account": "Account",
+    "logout": "Sign out",
+    "soon": "Coming soon"
+  },
+  "menu": {
+    "home": "Home",
+    "areas": "Areas",
+    "areasDescription": "The parts of your business where routines happen.",
+    "routines": "Routines",
+    "routinesDescription": "Recurring activities per area, with frequency and owner.",
+    "executions": "Executions",
+    "executionsDescription": "Each time someone performs a routine, step by step.",
+    "incidents": "Incidents",
+    "incidentsDescription": "What went wrong during an execution and its follow-up."
+  },
+  "login": {
+    "title": "Sign in",
+    "subtitle": "Keep track of your business routines and incidents.",
+    "simulated": "Demo access: the backend has no authentication yet. Any email with an 8-character password signs in with the profile you choose.",
+    "email": "Email",
+    "password": "Password",
+    "show": "Show password",
+    "hide": "Hide password",
+    "role": "Profile",
+    "roleHint": "Defines what you can do on each screen.",
+    "submit": "Sign in"
+  },
+  "home": {
+    "welcome": "Hi, {{name}}",
+    "subtitle": "Pick a module to get started.",
+    "modules": "Modules",
+    "open": "Open"
+  },
+  "table": {
+    "empty": "No records.",
+    "actions": "Actions"
+  },
+  "areas": {
+    "title": "Areas",
+    "subtitle": "The zones of your business that routines are assigned to.",
+    "new": "New area",
+    "newTitle": "New area",
+    "editTitle": "Edit area",
+    "search": "Search by name",
+    "empty": "No areas yet.",
+    "emptySearch": "No area matches your search.",
+    "fields": {
+      "nombre": "Name",
+      "descripcion": "Description",
+      "fechaCreacion": "Created"
+    },
+    "uppercaseNote": "Name and description are stored in uppercase.",
+    "created": "Area created.",
+    "updated": "Area updated.",
+    "deleted": "Area deleted.",
+    "deleteTitle": "Delete area",
+    "deleteMessage": "Delete the area {{name}}? It will no longer appear in the catalog."
+  },
+  "notFound": {
+    "message": "The page you are looking for does not exist.",
+    "back": "Back to home"
+  },
+  "paginator": {
+    "itemsPerPage": "Items per page",
+    "next": "Next page",
+    "previous": "Previous page",
+    "first": "First page",
+    "last": "Last page",
+    "range": "{{start}} – {{end}} of {{length}}",
+    "empty": "0 of 0"
+  }
+}

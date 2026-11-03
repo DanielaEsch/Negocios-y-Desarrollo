@@ -17,19 +17,25 @@ spring:
     date-format: "yyyy-MM-dd'T'HH:mm:ss"
     serialization:
       write-dates-as-timestamps: false
+    deserialization:
+      # Validacion estricta: un campo que no esta en el DTO es un 400
+      fail-on-unknown-properties: true
 
 server:
   port: ${SERVER_PORT:8080}
   servlet:
+    # Todas las rutas cuelgan de /api/v1 (version en la URL)
+    context-path: /api/v1
     encoding:
       charset: UTF-8
       force: true
 
+# Swagger UI en /api/v1/api-docs; el contrato en JSON en /api/v1/api-docs/openapi.json
 springdoc:
   api-docs:
-    path: /v3/api-docs
+    path: /api-docs/openapi.json
   swagger-ui:
-    path: /swagger-ui.html
+    path: /api-docs
 
 management:
   endpoints:

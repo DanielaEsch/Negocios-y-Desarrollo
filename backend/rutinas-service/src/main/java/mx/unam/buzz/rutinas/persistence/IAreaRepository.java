@@ -19,8 +19,11 @@ public interface IAreaRepository extends JpaRepository<AreaDO, Long> {
 
     boolean existsByNombreAndActivoTrueAndIdNot(String nombre, Long id);
 
+    // El CAST tipa el parametro: sin el, PostgreSQL recibe el null como bytea y el LIKE
+    // truena cuando no hay filtro. H2 no lo detecta, por eso se prueba contra PostgreSQL.
     @Query("SELECT t FROM AreaDO t"
             + " WHERE t.activo = true"
-            + " AND (:nombre IS NULL OR t.nombre LIKE CONCAT('%', :nombre, '%'))")
+            + " AND (CAST(:nombre AS string) IS NULL"
+            + " OR t.nombre LIKE CONCAT('%', CAST(:nombre AS string), '%'))")
     Page<AreaDO> findList(@Param("nombre") String nombre, Pageable pageable);
 }

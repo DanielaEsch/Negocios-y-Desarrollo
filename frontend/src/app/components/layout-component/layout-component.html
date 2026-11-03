@@ -1,0 +1,115 @@
+<div class="layout__progress">
+  @if (loading.isLoading()) {
+    <mat-progress-bar mode="indeterminate" />
+  }
+</div>
+
+<mat-toolbar class="layout__toolbar">
+  @if (isHandset()) {
+    <button
+      mat-icon-button
+      type="button"
+      [attr.aria-label]="'layout.menu' | translate"
+      (click)="toggleMenu()"
+    >
+      <mat-icon>menu</mat-icon>
+    </button>
+  }
+  <a routerLink="/inicio" class="layout__brand"><app-brand-component /></a>
+
+  <span class="layout__spacer"></span>
+
+  <button
+    mat-icon-button
+    type="button"
+    [matMenuTriggerFor]="langMenu"
+    [matTooltip]="'layout.language' | translate"
+    [attr.aria-label]="'layout.language' | translate"
+  >
+    <mat-icon>translate</mat-icon>
+  </button>
+  <mat-menu #langMenu="matMenu">
+    @for (lang of langs; track lang) {
+      <button mat-menu-item type="button" (click)="language.use(lang)">
+        <mat-icon>{{ language.current() === lang ? 'check' : '' }}</mat-icon>
+        <span>{{ 'language.' + lang | translate }}</span>
+      </button>
+    }
+  </mat-menu>
+
+  <button
+    mat-icon-button
+    type="button"
+    [matTooltip]="'layout.theme' | translate"
+    [attr.aria-label]="'layout.theme' | translate"
+    (click)="theme.toggle()"
+  >
+    <mat-icon>{{ theme.theme() === 'dark' ? 'light_mode' : 'dark_mode' }}</mat-icon>
+  </button>
+
+  @if (auth.session(); as session) {
+    <button
+      mat-button
+      type="button"
+      class="layout__user"
+      [matMenuTriggerFor]="userMenu"
+      [attr.aria-label]="'layout.account' | translate"
+    >
+      <span class="layout__avatar" aria-hidden="true">{{ initials() }}</span>
+      @if (!isHandset()) {
+        <span class="layout__user-name">{{ session.nombre }}</span>
+      }
+    </button>
+    <mat-menu #userMenu="matMenu" xPosition="before">
+      <div class="layout__user-card" role="presentation">
+        <strong>{{ session.nombre }}</strong>
+        <span>{{ session.correo }}</span>
+        <span class="layout__role">{{ 'roles.' + session.rol | translate }}</span>
+      </div>
+      <mat-divider />
+      <button mat-menu-item type="button" (click)="auth.logout()">
+        <mat-icon>logout</mat-icon>
+        <span>{{ 'layout.logout' | translate }}</span>
+      </button>
+    </mat-menu>
+  }
+</mat-toolbar>
+
+<mat-sidenav-container class="layout__container">
+  <mat-sidenav
+    class="layout__sidenav"
+    [mode]="isHandset() ? 'over' : 'side'"
+    [opened]="sidenavOpened()"
+    (closedStart)="opened.set(false)"
+  >
+    <mat-nav-list>
+      @for (item of menu; track item.route) {
+        @if (item.soon) {
+          <mat-list-item disabled class="layout__soon">
+            <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+            <span matListItemTitle>{{ item.labelKey | translate }}</span>
+            <span matListItemLine class="layout__soon-label">{{ 'layout.soon' | translate }}</span>
+          </mat-list-item>
+        } @else {
+          <a
+            mat-list-item
+            [routerLink]="item.route"
+            routerLinkActive
+            #rla="routerLinkActive"
+            [activated]="rla.isActive"
+            (click)="closeOnHandset()"
+          >
+            <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+            <span matListItemTitle>{{ item.labelKey | translate }}</span>
+          </a>
+        }
+      }
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="layout__content">
+    <main class="layout__main">
+      <router-outlet />
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>
