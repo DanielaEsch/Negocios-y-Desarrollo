@@ -57,6 +57,21 @@ public class Ejecucion {
     }
 
     /**
+     * Rehidrata una ejecucion guardada para aplicarle las reglas. No valida
+     * transiciones: el estado ya paso por ellas cuando se guardo.
+     */
+    public static Ejecucion reconstituir(Long idRutina, LocalDateTime fechaProgramada,
+                                         Map<Long, EstadoTareaEjecucion> tareas, EstadoEjecucion estado,
+                                         Long idOperador, long version) {
+        Ejecucion ejecucion = new Ejecucion(idRutina, fechaProgramada);
+        ejecucion.tareas.putAll(tareas);
+        ejecucion.estado = Objects.requireNonNull(estado, "estado");
+        ejecucion.idOperador = idOperador;
+        ejecucion.version = version;
+        return ejecucion;
+    }
+
+    /**
      * Un operador toma la ejecucion. Recibe la version que leyo: si alguien mas la
      * modifico en medio, la operacion se rechaza en lugar de pisar el cambio.
      *

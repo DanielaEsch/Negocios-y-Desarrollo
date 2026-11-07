@@ -1,0 +1,408 @@
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px 24px;
+  margin-bottom: 20px;
+}
+
+.day-nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--tk-line);
+  border-radius: 999px;
+  background: var(--tk-surface);
+}
+
+.day-nav__label {
+  min-width: 96px;
+  text-align: center;
+  font-weight: 600;
+
+  &::first-letter {
+    text-transform: uppercase;
+  }
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 20px;
+  align-items: start;
+
+  @media (max-width: 1100px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+// La hoja: la pieza grande de la pantalla
+.sheet {
+  padding: 8px 0 14px;
+  min-width: 0;
+}
+
+.sheet__empty {
+  padding: 32px 20px;
+  color: var(--tk-ink-soft);
+}
+
+.sheet__scroll {
+  overflow-x: auto;
+}
+
+.grid {
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 100%;
+}
+
+.grid :where(th, td) {
+  padding: 0;
+}
+
+.grid__corner,
+.grid__name {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--tk-surface);
+  text-align: left;
+}
+
+.grid__corner {
+  padding: 10px 16px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--tk-ink-soft);
+}
+
+.grid__hour {
+  min-width: 40px;
+  padding: 10px 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--tk-ink-soft);
+  text-align: center;
+}
+
+.grid__hour--now {
+  color: var(--tk-on-action);
+  background: var(--tk-action);
+  border-radius: 8px 8px 0 0;
+}
+
+.grid__area th {
+  padding: 0;
+  text-align: left;
+}
+
+// El th abarca toda la fila; lo que se queda fijo al desplazar es el texto
+.grid__area span {
+  position: sticky;
+  left: 0;
+  display: inline-block;
+  padding: 14px 16px 6px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--tk-action);
+  text-align: left;
+}
+
+.grid__name {
+  min-width: 180px;
+  max-width: 220px;
+  padding: 4px 12px 4px 16px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  border-top: 1px solid var(--tk-line);
+
+  @media (max-width: 720px) {
+    min-width: 132px;
+  }
+}
+
+.grid__cell {
+  height: 44px;
+  text-align: center;
+  border-top: 1px solid var(--tk-line);
+  border-left: 1px dashed color-mix(in srgb, var(--tk-line) 70%, transparent);
+}
+
+.grid__cell--now {
+  background: color-mix(in srgb, var(--tk-action) 8%, transparent);
+}
+
+// Marcas: la casilla de la hoja, rellena segun el estado
+.mark {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  overflow: hidden;
+  vertical-align: middle;
+  border: 2px solid var(--tk-ink-soft);
+  border-radius: 7px;
+  background: var(--tk-surface);
+  color: #fff;
+  cursor: pointer;
+
+  mat-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  &:hover {
+    transform: scale(1.12);
+  }
+}
+
+.mark[data-estado='COMPLETADA'] {
+  border-color: var(--tk-done);
+  background: var(--tk-done);
+}
+
+.mark[data-estado='VENCIDA'] {
+  border-color: var(--tk-late);
+  background: var(--tk-late);
+}
+
+.mark[data-estado='EN_CURSO'] {
+  border-color: var(--tk-doing);
+}
+
+.mark[data-estado='CANCELADA'] {
+  border-style: dashed;
+  opacity: 0.5;
+}
+
+.mark__fill {
+  position: absolute;
+  inset: auto 0 0;
+  background: var(--tk-doing);
+}
+
+// Incidencia abierta: un punto en la esquina, como el doblez de la hoja
+.mark--alert::after {
+  content: '';
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  width: 10px;
+  height: 10px;
+  border-radius: 0 0 0 10px;
+  background: var(--tk-late);
+  box-shadow: -1px 1px 0 1px var(--tk-surface);
+}
+
+.mark[data-estado='VENCIDA'].mark--alert::after {
+  background: var(--tk-ink);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin: 14px 16px 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.85rem;
+  color: var(--tk-ink-soft);
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+}
+
+.mark--sample {
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  cursor: default;
+
+  mat-icon {
+    width: 14px;
+    height: 14px;
+    font-size: 14px;
+  }
+
+  &:hover {
+    transform: none;
+  }
+}
+
+// Columna lateral
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.side__block {
+  padding: 16px 18px;
+
+  h2 {
+    font-size: 1.05rem;
+  }
+}
+
+.side__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.side__link {
+  color: var(--tk-action);
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.side__empty,
+.side__note {
+  margin: 8px 0 0;
+  font-size: 0.88rem;
+  color: var(--tk-ink-soft);
+}
+
+.alerts {
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.alert {
+  display: grid;
+  gap: 4px;
+  padding: 10px 0;
+  border-top: 1px solid var(--tk-line);
+  color: inherit;
+  text-decoration: none;
+
+  app-status-component {
+    justify-self: start;
+  }
+
+  &:hover .alert__text {
+    text-decoration: underline;
+  }
+}
+
+.alerts li:first-child .alert {
+  border-top: 0;
+}
+
+.alert__text {
+  font-weight: 500;
+}
+
+.alert__meta {
+  font-size: 0.82rem;
+  color: var(--tk-ink-soft);
+}
+
+.bars {
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bar {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px 8px;
+
+  & + & {
+    margin-top: 12px;
+  }
+}
+
+.bar__label {
+  font-size: 0.92rem;
+}
+
+.bar__value {
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.bar__track {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 2px;
+  height: 10px;
+  overflow: hidden;
+  border-radius: 5px;
+}
+
+.bar__seg {
+  flex-basis: 0;
+  background: var(--tk-surface-sunk);
+}
+
+.bar__seg--done {
+  background: var(--tk-done);
+}
+
+.bar__seg--doing {
+  background: var(--tk-doing);
+}
+
+.bar__seg--late {
+  background: var(--tk-late);
+}
+
+.trend {
+  display: flex;
+  gap: 6px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.trend__day {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  color: var(--tk-ink-soft);
+}
+
+.trend__track {
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  height: 72px;
+  border-radius: 4px;
+  background: var(--tk-surface-sunk);
+}
+
+.trend__bar {
+  width: 100%;
+  border-radius: 4px;
+  background: var(--tk-done);
+}
+
+.trend__bar--low {
+  background: var(--tk-doing);
+}
+
+.trend__day--current {
+  color: var(--tk-ink);
+  font-weight: 700;
+}
+
+.trend__label {
+  text-transform: uppercase;
+}

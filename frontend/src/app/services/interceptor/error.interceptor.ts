@@ -10,7 +10,7 @@ import { NotificationService } from '../notification/notification.service';
  * Convierte cualquier error HTTP en un ApiError con su ProblemDetail (RFC 7807).
  *
  * - 400, 404 y 409 los resuelve la pagina (errores por campo, mensajes de negocio).
- * - 401 cierra la sesion.
+ * - 401 cierra la sesion (salvo en el login, donde significa credenciales incorrectas).
  * - Sin conexion (status 0) y 5xx se avisan aqui con un snackbar, una sola vez.
  *
  * AuthService y NotificationService se piden hasta que hay un error: TranslateService
@@ -27,7 +27,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       }
       const problem = toProblemDetail(error);
 
-      if (error.status === 401) {
+      if (error.status === 401 && !req.url.endsWith('/auth/login')) {
         injector.get(AuthService).logout();
       } else if (error.status === 0) {
         injector.get(NotificationService).error('errors.offline');

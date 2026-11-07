@@ -1,0 +1,89 @@
+<div class="page equipo">
+  <header class="head">
+    <div>
+      <h1 class="page-title">{{ 'equipo.title' | translate }}</h1>
+      <p class="page-lead">{{ 'equipo.lead' | translate }}</p>
+    </div>
+    <button mat-flat-button type="button" (click)="agregar()">
+      <mat-icon>person_add</mat-icon>
+      {{ 'equipo.agregar' | translate }}
+    </button>
+  </header>
+
+  @for (grupo of grupos(); track grupo.perfil) {
+    <section class="group">
+      <h2 class="group__title">{{ 'perfil.plural.' + grupo.perfil | translate }}</h2>
+      <ul class="people">
+        @for (usuario of grupo.usuarios; track usuario.id) {
+          <li class="person panel">
+            <span class="avatar" [attr.data-perfil]="usuario.perfil" aria-hidden="true">{{
+              iniciales(usuario.nombre)
+            }}</span>
+            <div class="person__main">
+              <p class="person__name">
+                {{ usuario.nombre }}
+                @if (usuario.id === auth.usuario()?.id) {
+                  <span class="person__you">{{ 'equipo.tu' | translate }}</span>
+                }
+              </p>
+              <p class="person__mail">{{ usuario.correo }}</p>
+              <p class="person__areas">
+                @if (usuario.perfil === 'ADMINISTRADOR') {
+                  {{ 'equipo.todasLasAreas' | translate }}
+                } @else if (usuario.areas.length) {
+                  @for (area of usuario.areas; track area.id) {
+                    <span class="tag">{{ oracion(area.nombre) }}</span>
+                  }
+                } @else {
+                  <span class="person__warn">{{ 'equipo.sinAreas' | translate }}</span>
+                }
+              </p>
+            </div>
+            <p class="person__consent">
+              @if (usuario.fechaConsentimiento) {
+                {{
+                  'equipo.aceptoAviso'
+                    | translate
+                      : {
+                          fecha:
+                            (usuario.fechaConsentimiento
+                            | date: 'd MMM y' : '' : language.current()),
+                        }
+                }}
+              } @else {
+                <span class="person__warn">{{ 'equipo.sinConsentimiento' | translate }}</span>
+              }
+            </p>
+            @if (usuario.perfil !== 'ADMINISTRADOR') {
+              <div class="person__actions">
+                <button mat-button type="button" (click)="cambiarAreas(usuario)">
+                  {{ 'equipo.cambiarAreas' | translate }}
+                </button>
+                <button
+                  mat-icon-button
+                  type="button"
+                  [matMenuTriggerFor]="mas"
+                  [attr.aria-label]="'equipo.mas' | translate: { name: usuario.nombre }"
+                >
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #mas="matMenu">
+                  @if (usuario.perfil === 'OPERADOR') {
+                    <button mat-menu-item type="button" (click)="promover(usuario)">
+                      <mat-icon>upgrade</mat-icon>
+                      {{ 'equipo.promover' | translate }}
+                    </button>
+                  }
+                  <button mat-menu-item type="button" (click)="desactivar(usuario)">
+                    <mat-icon class="button-danger-icon">person_off</mat-icon>
+                    {{ 'equipo.desactivar' | translate }}
+                  </button>
+                </mat-menu>
+              </div>
+            }
+          </li>
+        }
+      </ul>
+    </section>
+  }
+</div>

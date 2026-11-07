@@ -1,23 +1,59 @@
 @use '@angular/material' as mat;
 
-// Tema Material 3. `color-scheme` hace que los colores respondan a light/dark: el tema
-// oscuro solo cambia `color-scheme` en <html> (ThemeService agrega .dark-theme).
+// TaskIn: la hoja de control pegada en la puerta del bano, hecha pantalla.
+// Tinta azul petroleo sobre papel frio; solo tres colores de estado (hecho, en curso,
+// vencido) para que el color siempre signifique algo.
+//
+// `color-scheme` hace que los colores respondan a light/dark: el tema oscuro solo cambia
+// `color-scheme` en <html> (ThemeService agrega .dark-theme). Todos los tokens usan
+// light-dark() para no repetir la paleta.
 html {
   color-scheme: light;
   @include mat.theme(
     (
       color: (
-        primary: mat.$azure-palette,
-        tertiary: mat.$violet-palette,
+        primary: mat.$cyan-palette,
+        tertiary: mat.$orange-palette,
         theme-type: color-scheme,
       ),
       typography: (
-        plain-family: 'Inter, Roboto, sans-serif',
-        brand-family: 'Inter, Roboto, sans-serif',
+        plain-family: "'Atkinson Hyperlegible Next', system-ui, sans-serif",
+        brand-family: "'Atkinson Hyperlegible Next', system-ui, sans-serif",
       ),
       density: 0,
     )
   );
+
+  // Paleta propia
+  --tk-ink: light-dark(#17323a, #e3ece9);
+  --tk-ink-soft: light-dark(#4f6661, #9fb4af);
+  --tk-paper: light-dark(#f3f5f2, #0f181a);
+  --tk-surface: light-dark(#ffffff, #162327);
+  --tk-surface-sunk: light-dark(#e9eeea, #1d2d31);
+  --tk-line: light-dark(#d5ddd8, #2b3d41);
+  --tk-action: light-dark(#0b6e69, #5cc8bd);
+  --tk-on-action: light-dark(#ffffff, #04211f);
+  --tk-done: light-dark(#23835a, #5ec58f);
+  --tk-done-wash: light-dark(#dff1e7, #183a2a);
+  --tk-doing: light-dark(#b7790b, #f0b54a);
+  --tk-doing-wash: light-dark(#fbefd6, #3a2e12);
+  --tk-late: light-dark(#b3382a, #f08a7c);
+  --tk-late-wash: light-dark(#f8e1dd, #3d1f1b);
+  --tk-radius-s: 6px;
+  --tk-radius-m: 10px;
+  --tk-radius-l: 16px;
+
+  // Material usa la misma paleta: botones, campos y dialogos quedan en el tono de la app
+  --mat-sys-primary: var(--tk-action);
+  --mat-sys-on-primary: var(--tk-on-action);
+  --mat-sys-surface: var(--tk-surface);
+  --mat-sys-surface-container: var(--tk-surface);
+  --mat-sys-surface-container-high: var(--tk-surface);
+  --mat-sys-surface-container-low: var(--tk-paper);
+  --mat-sys-on-surface: var(--tk-ink);
+  --mat-sys-on-surface-variant: var(--tk-ink-soft);
+  --mat-sys-outline-variant: var(--tk-line);
+  --mat-sys-error: var(--tk-late);
 }
 
 html.dark-theme {
@@ -31,9 +67,39 @@ body {
 
 body {
   margin: 0;
-  font: var(--mat-sys-body-medium);
-  background: var(--mat-sys-surface);
-  color: var(--mat-sys-on-surface);
+  font-family: 'Atkinson Hyperlegible Next', system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.45;
+  background: var(--tk-paper);
+  color: var(--tk-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+// Horas y conteos siempre en cifras tabulares: se alinean en columna
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+:focus-visible {
+  outline: 3px solid var(--tk-action);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 // Utilidades compartidas
@@ -46,37 +112,79 @@ body {
   white-space: nowrap;
 }
 
+.page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 28px 32px 48px;
+
+  @media (max-width: 720px) {
+    padding: 20px 16px 96px;
+  }
+}
+
+.page-title {
+  font-size: 1.75rem;
+  line-height: 1.2;
+}
+
+.page-lead {
+  margin: 6px 0 0;
+  color: var(--tk-ink-soft);
+}
+
+.panel {
+  background: var(--tk-surface);
+  border: 1px solid var(--tk-line);
+  border-radius: var(--tk-radius-l);
+}
+
 .button-danger {
   @include mat.button-overrides(
     (
-      filled-container-color: var(--mat-sys-error),
-      filled-label-text-color: var(--mat-sys-on-error),
+      filled-container-color: var(--tk-late),
+      filled-label-text-color: #fff,
     )
   );
 }
 
 .button-danger-icon {
-  color: var(--mat-sys-error);
+  color: var(--tk-late);
+}
+
+// Botones grandes para el telefono: el operador los toca con prisa
+.button-xl {
+  @include mat.button-overrides(
+    (
+      filled-container-height: 56px,
+      outlined-container-height: 56px,
+      filled-label-text-size: 1.05rem,
+      outlined-label-text-size: 1.05rem,
+      filled-container-shape: 14px,
+      outlined-container-shape: 14px,
+    )
+  );
 }
 
 .form-error {
   margin: 0 0 12px;
-  padding: 8px 12px;
-  border-radius: var(--mat-sys-corner-small);
-  background: var(--mat-sys-error-container);
-  color: var(--mat-sys-on-error-container);
+  padding: 10px 12px;
+  border-radius: var(--tk-radius-s);
+  background: var(--tk-late-wash);
+  color: var(--tk-late);
 }
 
 .form-note {
   margin: 4px 0 0;
-  font: var(--mat-sys-body-small);
-  color: var(--mat-sys-on-surface-variant);
+  font-size: 0.85rem;
+  color: var(--tk-ink-soft);
 }
 
 .snack-success {
   @include mat.snack-bar-overrides(
     (
-      container-color: var(--mat-sys-inverse-surface),
+      container-color: var(--tk-ink),
+      supporting-text-color: var(--tk-paper),
+      button-color: var(--tk-paper),
     )
   );
 }
@@ -84,9 +192,9 @@ body {
 .snack-error {
   @include mat.snack-bar-overrides(
     (
-      container-color: var(--mat-sys-error),
-      supporting-text-color: var(--mat-sys-on-error),
-      button-color: var(--mat-sys-on-error),
+      container-color: var(--tk-late),
+      supporting-text-color: #fff,
+      button-color: #fff,
     )
   );
 }

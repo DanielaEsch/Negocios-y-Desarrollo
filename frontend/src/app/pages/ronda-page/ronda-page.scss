@@ -1,0 +1,218 @@
+.ronda-page {
+  max-width: 720px;
+}
+
+.back {
+  display: inline-flex;
+  gap: 6px;
+  margin-bottom: 16px;
+  color: var(--tk-ink-soft);
+  font-weight: 600;
+  text-decoration: none;
+
+  &:hover {
+    color: var(--tk-ink);
+  }
+}
+
+.head__top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.head__time {
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
+.head__who {
+  margin: 8px 0 0;
+  font-size: 0.92rem;
+  color: var(--tk-ink-soft);
+}
+
+// Avance: una casilla por tarea, como la fila de la hoja de control
+.progress {
+  display: flex;
+  gap: 4px;
+  margin-top: 22px;
+}
+
+.progress__step {
+  flex: 1;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--tk-surface-sunk);
+}
+
+.progress__step--done {
+  background: var(--tk-done);
+}
+
+.progress__label {
+  margin: 6px 0 0;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--tk-ink-soft);
+}
+
+.note {
+  margin: 16px 0 0;
+  padding: 10px 14px;
+  border-radius: var(--tk-radius-m);
+  background: var(--tk-surface-sunk);
+  color: var(--tk-ink-soft);
+}
+
+.checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.task {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  min-height: 64px;
+  padding: 10px 16px;
+  border: 1px solid var(--tk-line);
+  border-radius: var(--tk-radius-m);
+  background: var(--tk-surface);
+  color: var(--tk-ink);
+  font: inherit;
+  font-size: 1.05rem;
+  text-align: left;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    border-color: var(--tk-action);
+  }
+
+  &:disabled {
+    cursor: default;
+  }
+}
+
+.task__box {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  flex: none;
+  border: 2px solid var(--tk-ink-soft);
+  border-radius: 8px;
+  color: #fff;
+
+  mat-icon {
+    font-weight: 700;
+  }
+}
+
+.task__name {
+  flex: 1;
+}
+
+.task__time {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--tk-done);
+}
+
+.task--done {
+  background: transparent;
+
+  .task__box {
+    border-color: var(--tk-done);
+    background: var(--tk-done);
+    animation: sello 220ms ease-out;
+  }
+
+  .task__name {
+    color: var(--tk-ink-soft);
+  }
+}
+
+// El "sello" al marcar: la unica animacion de la pantalla, responde al toque
+@keyframes sello {
+  from {
+    transform: scale(1.35);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.checklist--locked .task:not(.task--done) {
+  opacity: 0.7;
+}
+
+.incidents {
+  margin-top: 28px;
+}
+
+.incidents__title {
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+
+.incident {
+  padding: 12px 14px;
+  border: 1px solid var(--tk-line);
+  border-radius: var(--tk-radius-m);
+  background: var(--tk-surface);
+
+  & + & {
+    margin-top: 8px;
+  }
+}
+
+.incident__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--tk-ink-soft);
+  font-size: 0.88rem;
+}
+
+.incident__text {
+  margin: 8px 0 0;
+}
+
+.incident__answer {
+  margin: 8px 0 0;
+  padding-left: 10px;
+  border-left: 3px solid var(--tk-done);
+  color: var(--tk-ink-soft);
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 28px;
+}
+
+.actions__cancel {
+  align-self: center;
+  color: var(--tk-late);
+}
+
+@media (max-width: 860px) {
+  // En el telefono las acciones quedan fijas sobre las pestanas, al alcance del pulgar
+  .actions {
+    position: sticky;
+    bottom: 68px;
+    margin: 24px -16px 0;
+    padding: 12px 16px;
+    background: color-mix(in srgb, var(--tk-paper) 92%, transparent);
+    backdrop-filter: blur(6px);
+    border-top: 1px solid var(--tk-line);
+  }
+}

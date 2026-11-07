@@ -6,6 +6,7 @@ import { provideRouter } from '@angular/router';
 import { provideTranslateService, TranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ApiError } from '../../models/api/problem-detail.model';
+import { guardarSesion, sesionDePrueba } from '../../testing/sesion.testing';
 import { AuthService } from '../auth/auth.service';
 import { LoadingService } from '../loading/loading.service';
 import { errorInterceptor } from './error.interceptor';
@@ -18,6 +19,7 @@ describe('interceptores', () => {
   let snackOpen: ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
+    sessionStorage.clear();
     snackOpen = vi.fn();
     TestBed.configureTestingModule({
       providers: [
@@ -48,6 +50,28 @@ describe('interceptores', () => {
     const asset = backend.expectOne('/i18n/es.json');
     expect(asset.request.headers.has('X-Client-Request-Id')).toBe(false);
     asset.flush({});
+  });
+
+  it('manda el token Bearer y el usuario de la sesion', () => {
+    guardarSesion(sesionDePrueba('OPERADOR'));
+    http.get('/api/v1/ejecuciones').subscribe();
+
+    const api = backend.expectOne('/api/v1/ejecuciones');
+    expect(api.request.headers.get('Authorization')).toBe('Bearer token-de-prueba');
+    expect(api.request.headers.get('X-Client-UserId')).toBe('ana@taskin.mx');
+    api.flush({});
+  });
+
+  it('un 401 del login no cierra la sesion: son credenciales malas', () => {
+    const logout = vi
+      .spyOn(TestBed.inject(AuthService), 'logout')
+      .mockImplementation(() => undefined);
+
+    http.post('/api/v1/auth/login', {}).subscribe({ error: () => undefined });
+    backend
+      .expectOne('/api/v1/auth/login')
+      .flush(null, { status: 401, statusText: 'Unauthorized' });
+    expect(logout).not.toHaveBeenCalled();
   });
 
   it('enciende la barra de carga mientras la peticion esta en curso', () => {

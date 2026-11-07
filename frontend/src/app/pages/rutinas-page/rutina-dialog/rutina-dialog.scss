@@ -1,0 +1,73 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  padding-top: 4px;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 12px;
+
+  > mat-form-field {
+    flex: 1 1 160px;
+  }
+
+  > .grow {
+    flex: 2 1 240px;
+  }
+}
+
+.block {
+  margin: 4px 0 16px;
+  padding: 0;
+  border: 0;
+
+  legend {
+    margin-bottom: 10px;
+    padding: 0;
+    font-weight: 700;
+  }
+}
+
+.freq {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.sentence {
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: var(--tk-radius-s);
+  background: var(--tk-surface-sunk);
+  font-weight: 600;
+}
+
+.tasks {
+  margin: 10px 0 4px;
+  padding: 0;
+  list-style: none;
+}
+
+.task {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  & + & {
+    margin-top: 6px;
+  }
+
+  .grow {
+    flex: 1;
+  }
+}
+
+.task__n {
+  width: 24px;
+  color: var(--tk-ink-soft);
+  font-weight: 600;
+  text-align: right;
+  margin-right: 6px;
+}

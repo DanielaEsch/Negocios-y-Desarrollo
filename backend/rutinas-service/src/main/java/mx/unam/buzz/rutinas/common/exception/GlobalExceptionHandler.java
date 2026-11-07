@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mx.unam.buzz.rutinas.common.constant.CommonConstant;
 import mx.unam.buzz.rutinas.common.constant.CommonErrorCode;
+import mx.unam.buzz.rutinas.common.constant.EjecucionErrorCode;
 import mx.unam.buzz.rutinas.dominio.comun.ConcurrenciaException;
 import mx.unam.buzz.rutinas.dominio.comun.ReglaNegocioException;
 import mx.unam.buzz.rutinas.dominio.comun.TransicionInvalidaException;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -59,6 +61,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(ConcurrenciaException.class)
     public ProblemDetail handleConcurrencia(ConcurrenciaException ex, HttpServletRequest request) {
         return build(HttpStatus.CONFLICT, "concurrencia", ex.getMessage(), request.getRequestURI());
+    }
+
+    /** Dos personas guardaron la misma ronda a la vez: gana la primera (bloqueo optimista de JPA). */
+    @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
+    public ProblemDetail handleOptimisticLock(ObjectOptimisticLockingFailureException ex, HttpServletRequest request) {
+        return build(HttpStatus.CONFLICT, "concurrencia", EjecucionErrorCode.VERSION_CONFLICT.getCode(),
+                request.getRequestURI());
     }
 
     @ExceptionHandler(ReglaNegocioException.class)

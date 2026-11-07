@@ -1,0 +1,132 @@
+.head {
+  margin-bottom: 16px;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.chip {
+  min-height: 36px;
+  padding: 4px 14px;
+  border: 1px solid var(--tk-line);
+  border-radius: 999px;
+  background: var(--tk-surface);
+  color: var(--tk-ink);
+  font: inherit;
+  font-size: 0.92rem;
+  cursor: pointer;
+}
+
+.chip--on {
+  border-color: var(--tk-ink);
+  background: var(--tk-ink);
+  color: var(--tk-paper);
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  align-items: start;
+
+  @media (max-width: 900px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.column {
+  padding: 14px;
+  border-radius: var(--tk-radius-l);
+  background: var(--tk-surface-sunk);
+}
+
+.column__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: 1rem;
+
+  &::before {
+    content: '';
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--tk-late);
+  }
+}
+
+.column[data-estado='REVISION'] .column__title::before {
+  background: var(--tk-doing);
+}
+
+.column[data-estado='RESUELTA'] .column__title::before {
+  background: var(--tk-done);
+}
+
+.column__count {
+  margin-left: auto;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--tk-surface);
+  font-size: 0.85rem;
+}
+
+.column__empty,
+.column__more {
+  margin: 4px 0;
+  font-size: 0.9rem;
+  color: var(--tk-ink-soft);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px;
+  border: 1px solid var(--tk-line);
+  border-radius: var(--tk-radius-m);
+  background: var(--tk-surface);
+
+  & + & {
+    margin-top: 10px;
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+.card__meta {
+  font-size: 0.85rem;
+  color: var(--tk-ink-soft);
+
+  a {
+    color: inherit;
+  }
+}
+
+.card__text {
+  font-size: 1.02rem;
+  font-weight: 500;
+}
+
+.card__who {
+  font-size: 0.85rem;
+  color: var(--tk-ink-soft);
+}
+
+.card__answer {
+  padding-left: 10px;
+  border-left: 3px solid var(--tk-done);
+  font-size: 0.92rem;
+}
+
+.card__action {
+  align-self: flex-start;
+  margin-top: 6px;
+}

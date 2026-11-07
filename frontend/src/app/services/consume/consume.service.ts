@@ -25,6 +25,10 @@ export class ConsumeService {
     return this.http.put<T>(url, body, { params: this.buildParams(params) });
   }
 
+  httpPatch<T>(url: string, body: unknown, params?: QueryParams): Observable<T> {
+    return this.http.patch<T>(url, body, { params: this.buildParams(params) });
+  }
+
   httpDelete<T>(url: string, params?: QueryParams): Observable<T> {
     return this.http.delete<T>(url, { params: this.buildParams(params) });
   }

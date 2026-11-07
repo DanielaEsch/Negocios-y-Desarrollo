@@ -32,7 +32,9 @@ class ApiPrefixTest {
 
     @Test
     void lasRutasCuelganDeApiV1() {
-        assertThat(rest.getForEntity(url("/api/v1/areas"), String.class).getStatusCode()).isEqualTo(HttpStatus.OK);
+        // Sin token la ruta existe (401), sin prefijo no (404)
+        assertThat(rest.getForEntity(url("/api/v1/areas"), String.class).getStatusCode())
+                .isEqualTo(HttpStatus.UNAUTHORIZED);
         assertThat(rest.getForEntity(url("/areas"), String.class).getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 

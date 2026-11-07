@@ -12,3 +12,7 @@ spring:
 logging:
   level:
     mx.unam.buzz.rutinas: DEBUG
+
+taskin:
+  demo:
+    habilitada: ${TASKIN_DEMO:true}

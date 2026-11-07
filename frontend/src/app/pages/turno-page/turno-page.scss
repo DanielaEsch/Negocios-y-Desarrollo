@@ -1,0 +1,191 @@
+.turno {
+  max-width: 760px;
+}
+
+.head {
+  margin-bottom: 20px;
+}
+
+.page-lead::first-letter {
+  text-transform: uppercase;
+}
+
+// Lo que toca ahora: el unico bloque grande de la pantalla
+.now {
+  padding: 22px 22px 20px;
+  border-radius: var(--tk-radius-l);
+  background: var(--tk-ink);
+  color: var(--tk-paper);
+}
+
+.now[data-tipo='siguiente'],
+.now[data-tipo='libre'] {
+  background: var(--tk-surface);
+  color: var(--tk-ink);
+  border: 1px solid var(--tk-line);
+}
+
+.now[data-tipo='sigue'] .now__label {
+  color: var(--tk-doing);
+}
+
+.now__label {
+  margin: 0 0 4px;
+  font-weight: 600;
+  color: color-mix(in srgb, currentColor 75%, transparent);
+}
+
+.now__title {
+  font-size: 1.6rem;
+  line-height: 1.2;
+}
+
+.now__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  margin: 8px 0 18px;
+  color: color-mix(in srgb, currentColor 80%, transparent);
+}
+
+.now[data-tipo='libre'] .now__meta {
+  margin-bottom: 0;
+}
+
+.now__cta {
+  width: 100%;
+}
+
+.now[data-tipo='sigue'],
+.now[data-tipo='toca'] {
+  .now__cta {
+    --mat-button-filled-container-color: var(--tk-paper);
+    --mat-button-filled-label-text-color: var(--tk-ink);
+  }
+}
+
+// El dia
+.day {
+  margin-top: 32px;
+}
+
+.day__title {
+  margin-bottom: 12px;
+  font-size: 1.15rem;
+}
+
+.day__empty {
+  color: var(--tk-ink-soft);
+}
+
+.timeline {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.slot {
+  display: grid;
+  grid-template-columns: 58px 1fr;
+  gap: 12px;
+  padding: 6px 0;
+}
+
+.slot__hour {
+  padding-top: 14px;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.slot__items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 56px;
+  padding: 10px 14px;
+  border: 1px solid var(--tk-line);
+  border-left: 5px solid var(--tk-line);
+  border-radius: var(--tk-radius-m);
+  background: var(--tk-surface);
+  color: inherit;
+  text-decoration: none;
+
+  &:hover {
+    border-color: var(--tk-ink-soft);
+  }
+}
+
+.item[data-estado='COMPLETADA'] {
+  border-left-color: var(--tk-done);
+  background: transparent;
+
+  strong {
+    color: var(--tk-ink-soft);
+  }
+}
+
+.item[data-estado='EN_CURSO'] {
+  border-left-color: var(--tk-doing);
+}
+
+.item[data-estado='VENCIDA'] {
+  border-left-color: var(--tk-late);
+}
+
+.item__main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.item__sub {
+  font-size: 0.88rem;
+  color: var(--tk-ink-soft);
+}
+
+.item__side {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+}
+
+.item__count {
+  font-weight: 700;
+  color: var(--tk-doing);
+}
+
+.item__alert {
+  color: var(--tk-late);
+}
+
+.timeline__now {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--tk-action);
+
+  &::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    background: var(--tk-action);
+  }
+}
+
+@media (max-width: 520px) {
+  .item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

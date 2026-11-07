@@ -12,6 +12,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import mx.unam.buzz.rutinas.common.constant.CommonConstant;
+import mx.unam.buzz.rutinas.common.security.RequierePerfil;
 import mx.unam.buzz.rutinas.common.vo.IdRequestVO;
 import mx.unam.buzz.rutinas.common.vo.RequestVO;
 import mx.unam.buzz.rutinas.common.vo.ResponseVO;
@@ -20,6 +21,7 @@ import mx.unam.buzz.rutinas.common.vo.area.AreaResponseVO;
 import mx.unam.buzz.rutinas.common.vo.area.CreateAreaRequestVO;
 import mx.unam.buzz.rutinas.common.vo.area.FindListAreaRequestVO;
 import mx.unam.buzz.rutinas.common.vo.area.UpdateAreaRequestVO;
+import mx.unam.buzz.rutinas.dominio.usuario.Perfil;
 import mx.unam.buzz.rutinas.facade.IAreaFacade;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -37,6 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Endpoints del modulo de areas. Traduce HTTP a RequestVO y no decide nada.
+ * Todos leen; solo el administrador crea, cambia o elimina.
  * La forma de la entrada (@Valid y restricciones) se valida aqui; las reglas de negocio, en el servicio.
  * Swagger: el 400 se declara en cada endpoint y no en la clase (si esta en los dos, springdoc toma
  * cualquiera); los ejemplos de error estan en AreaApiExamples.
@@ -51,6 +54,7 @@ public class AreaController {
 
     private final IAreaFacade areaFacade;
 
+    @RequierePerfil(Perfil.ADMINISTRADOR)
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Crear un area", description = "El nombre es obligatorio, se guarda en mayusculas "
             + "y no se puede repetir entre areas activas.")
@@ -70,6 +74,7 @@ public class AreaController {
         return ResponseEntity.status(HttpStatus.CREATED).body(areaFacade.create(new RequestVO<>(body)));
     }
 
+    @RequierePerfil(Perfil.ADMINISTRADOR)
     @PutMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Actualizar un area")
     @ApiResponse(responseCode = "200", description = "Area actualizada")
@@ -90,6 +95,7 @@ public class AreaController {
         return ResponseEntity.ok(areaFacade.update(new RequestVO<>(body)));
     }
 
+    @RequierePerfil(Perfil.ADMINISTRADOR)
     @DeleteMapping(path = "/{id}")
     @Operation(summary = "Eliminar un area (borrado logico)")
     @ApiResponse(responseCode = "200", description = "OK")

@@ -24,11 +24,11 @@ public class Incidencia {
     private String comentarioResolucion;
     private LocalDateTime fechaResolucion;
 
-    private Incidencia(Long idEjecucion, Long idReporta, String descripcion) {
+    private Incidencia(Long idEjecucion, Long idReporta, String descripcion, LocalDateTime fechaReporte) {
         this.idEjecucion = idEjecucion;
         this.idReporta = idReporta;
         this.descripcion = descripcion;
-        this.fechaReporte = LocalDateTime.now();
+        this.fechaReporte = fechaReporte;
     }
 
     public static Incidencia reportar(Long idEjecucion, Long idReporta, String descripcion) {
@@ -36,8 +36,20 @@ public class Incidencia {
         validar(idReporta != null && idReporta > 0, "El usuario que reporta no es valido");
         validar(descripcion != null && !descripcion.isBlank(), "La descripcion es obligatoria");
 
-        Incidencia incidencia = new Incidencia(idEjecucion, idReporta, descripcion.trim());
+        Incidencia incidencia = new Incidencia(idEjecucion, idReporta, descripcion.trim(), LocalDateTime.now());
         incidencia.estado = EstadoIncidencia.PENDIENTE;
+        return incidencia;
+    }
+
+    /** Rehidrata una incidencia guardada para aplicarle las reglas. */
+    public static Incidencia reconstituir(Long idEjecucion, Long idReporta, String descripcion,
+                                          LocalDateTime fechaReporte, EstadoIncidencia estado, Long idRevisor,
+                                          String comentarioResolucion, LocalDateTime fechaResolucion) {
+        Incidencia incidencia = new Incidencia(idEjecucion, idReporta, descripcion, fechaReporte);
+        incidencia.estado = estado;
+        incidencia.idRevisor = idRevisor;
+        incidencia.comentarioResolucion = comentarioResolucion;
+        incidencia.fechaResolucion = fechaResolucion;
         return incidencia;
     }
 

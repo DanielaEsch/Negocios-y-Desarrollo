@@ -1,3 +1,4 @@
+import { provideHttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import {
   ActivatedRouteSnapshot,
@@ -5,9 +6,8 @@ import {
   RouterStateSnapshot,
   UrlTree,
 } from '@angular/router';
-import { firstValueFrom } from 'rxjs';
-import { AuthService } from '../auth/auth.service';
-import { authGuard, guestGuard, roleGuard } from './auth.guard';
+import { guardarSesion, sesionDePrueba } from '../../testing/sesion.testing';
+import { authGuard, guestGuard, homeGuard, roleGuard } from './auth.guard';
 
 describe('guards', () => {
   const route = {} as ActivatedRouteSnapshot;
@@ -16,7 +16,7 @@ describe('guards', () => {
 
   beforeEach(() => {
     sessionStorage.clear();
-    TestBed.configureTestingModule({ providers: [provideRouter([])] });
+    TestBed.configureTestingModule({ providers: [provideRouter([]), provideHttpClient()] });
   });
 
   it('sin sesion manda al login con returnUrl', () => {
@@ -24,27 +24,16 @@ describe('guards', () => {
     expect(result.toString()).toBe('/login?returnUrl=%2Fareas');
   });
 
-  it('con sesion deja pasar y el login redirige al inicio', async () => {
-    await firstValueFrom(
-      TestBed.inject(AuthService).login({
-        correo: 'a@b.mx',
-        contrasena: '12345678',
-        rol: 'OPERADOR',
-      }),
-    );
+  it('con sesion deja pasar y el login redirige al inicio del perfil', () => {
+    guardarSesion(sesionDePrueba('OPERADOR'));
     expect(run(authGuard)).toBe(true);
-    expect((run(guestGuard) as UrlTree).toString()).toBe('/inicio');
+    expect((run(guestGuard) as UrlTree).toString()).toBe('/turno');
+    expect((run(homeGuard) as UrlTree).toString()).toBe('/turno');
   });
 
-  it('roleGuard bloquea a un perfil sin permiso', async () => {
-    await firstValueFrom(
-      TestBed.inject(AuthService).login({
-        correo: 'a@b.mx',
-        contrasena: '12345678',
-        rol: 'OPERADOR',
-      }),
-    );
-    expect((run(roleGuard('ADMINISTRADOR')) as UrlTree).toString()).toBe('/inicio');
-    expect(run(roleGuard('OPERADOR', 'ADMINISTRADOR'))).toBe(true);
+  it('roleGuard bloquea a un perfil sin permiso', () => {
+    guardarSesion(sesionDePrueba('SUPERVISOR'));
+    expect((run(roleGuard('ADMINISTRADOR')) as UrlTree).toString()).toBe('/tablero');
+    expect(run(roleGuard('SUPERVISOR', 'ADMINISTRADOR'))).toBe(true);
   });
 });

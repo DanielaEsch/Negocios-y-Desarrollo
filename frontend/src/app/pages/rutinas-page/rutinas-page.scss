@@ -1,0 +1,98 @@
+.rutinas {
+  max-width: 920px;
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px 24px;
+  margin-bottom: 12px;
+}
+
+.empty {
+  padding: 32px 0;
+  color: var(--tk-ink-soft);
+}
+
+.group {
+  margin-top: 24px;
+}
+
+.group__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-size: 1.05rem;
+  color: var(--tk-action);
+}
+
+.group__count {
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--tk-surface-sunk);
+  color: var(--tk-ink-soft);
+  font-size: 0.85rem;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.routine {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  padding: 14px 12px 14px 18px;
+  border-radius: var(--tk-radius-m);
+}
+
+.routine__main {
+  flex: 1 1 320px;
+  min-width: 0;
+
+  p {
+    margin: 4px 0 0;
+  }
+}
+
+.routine__name {
+  font-size: 1.05rem;
+}
+
+.routine__when {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+
+  mat-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+    color: var(--tk-ink-soft);
+  }
+}
+
+.routine__when[data-frecuencia='POR_EVENTO'] mat-icon {
+  color: var(--tk-doing);
+}
+
+.routine__tasks {
+  font-size: 0.9rem;
+  color: var(--tk-ink-soft);
+}
+
+.routine__actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}

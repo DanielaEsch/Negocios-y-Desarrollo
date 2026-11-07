@@ -1,0 +1,117 @@
+.equipo {
+  max-width: 920px;
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px 24px;
+  margin-bottom: 12px;
+}
+
+.group {
+  margin-top: 24px;
+}
+
+.group__title {
+  margin-bottom: 10px;
+  font-size: 1.05rem;
+  color: var(--tk-action);
+}
+
+.people {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.person {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  padding: 14px 12px 14px 16px;
+  border-radius: var(--tk-radius-m);
+
+  p {
+    margin: 0;
+  }
+}
+
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--tk-surface-sunk);
+  font-weight: 700;
+}
+
+.avatar[data-perfil='SUPERVISOR'] {
+  background: var(--tk-doing-wash);
+  color: var(--tk-doing);
+}
+
+.avatar[data-perfil='ADMINISTRADOR'] {
+  background: var(--tk-ink);
+  color: var(--tk-paper);
+}
+
+.person__main {
+  flex: 1 1 240px;
+  min-width: 0;
+}
+
+.person__name {
+  font-weight: 700;
+}
+
+.person__you {
+  margin-left: 6px;
+  font-weight: 400;
+  font-size: 0.85rem;
+  color: var(--tk-ink-soft);
+}
+
+.person__mail {
+  font-size: 0.9rem;
+  color: var(--tk-ink-soft);
+  overflow-wrap: anywhere;
+}
+
+.person__areas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px !important;
+  font-size: 0.88rem;
+}
+
+.tag {
+  padding: 1px 10px;
+  border-radius: 999px;
+  background: var(--tk-surface-sunk);
+}
+
+.person__consent {
+  flex: 0 1 200px;
+  font-size: 0.82rem;
+  color: var(--tk-ink-soft);
+}
+
+.person__warn {
+  color: var(--tk-late);
+  font-weight: 600;
+}
+
+.person__actions {
+  display: flex;
+  align-items: center;
+}

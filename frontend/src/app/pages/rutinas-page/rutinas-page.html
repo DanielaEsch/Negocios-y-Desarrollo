@@ -1,0 +1,70 @@
+<div class="page rutinas">
+  <header class="head">
+    <div>
+      <h1 class="page-title">{{ 'rutinas.title' | translate }}</h1>
+      <p class="page-lead">{{ 'rutinas.lead' | translate }}</p>
+    </div>
+    <button mat-flat-button type="button" [disabled]="!areas().length" (click)="abrir(null)">
+      <mat-icon>add</mat-icon>
+      {{ 'rutinas.nueva' | translate }}
+    </button>
+  </header>
+
+  @if (cargado() && !grupos().length) {
+    <p class="empty">{{ 'rutinas.vacio' | translate }}</p>
+  }
+
+  @for (grupo of grupos(); track grupo.area.id) {
+    <section class="group">
+      <h2 class="group__title">
+        {{ oracion(grupo.area.nombre) }}
+        <span class="group__count num">{{ grupo.rutinas.length }}</span>
+      </h2>
+      <ul class="list">
+        @for (rutina of grupo.rutinas; track rutina.id) {
+          <li class="routine panel">
+            <div class="routine__main">
+              <h3 class="routine__name">{{ oracion(rutina.nombre) }}</h3>
+              <p class="routine__when" [attr.data-frecuencia]="rutina.frecuencia">
+                <mat-icon aria-hidden="true">{{
+                  rutina.frecuencia === 'POR_EVENTO' ? 'bolt' : 'schedule'
+                }}</mat-icon>
+                {{ frecuencia(rutina) }}
+              </p>
+              <p class="routine__tasks">
+                {{ 'rutinas.nTareas' | translate: { n: rutina.tareas.length } }}:
+                @for (tarea of rutina.tareas; track tarea.id; let last = $last) {
+                  {{ tarea.nombre }}{{ last ? '' : ', ' }}
+                }
+              </p>
+            </div>
+            <div class="routine__actions">
+              @if (rutina.frecuencia === 'POR_EVENTO') {
+                <button mat-stroked-button type="button" (click)="lanzar(rutina)">
+                  {{ 'rutinas.lanzar' | translate }}
+                </button>
+              }
+              <button mat-button type="button" (click)="abrir(rutina)">
+                {{ 'actions.edit' | translate }}
+              </button>
+              <button
+                mat-icon-button
+                type="button"
+                [matMenuTriggerFor]="mas"
+                [attr.aria-label]="'rutinas.mas' | translate"
+              >
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #mas="matMenu">
+                <button mat-menu-item type="button" (click)="eliminar(rutina)">
+                  <mat-icon class="button-danger-icon">delete</mat-icon>
+                  {{ 'actions.delete' | translate }}
+                </button>
+              </mat-menu>
+            </div>
+          </li>
+        }
+      </ul>
+    </section>
+  }
+</div>

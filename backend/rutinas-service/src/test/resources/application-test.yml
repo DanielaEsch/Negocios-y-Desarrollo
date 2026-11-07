@@ -7,3 +7,9 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create-drop
+
+taskin:
+  programacion:
+    habilitada: false
+  demo:
+    habilitada: false

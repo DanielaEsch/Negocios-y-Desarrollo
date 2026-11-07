@@ -1,0 +1,126 @@
+<div class="page turno">
+  <header class="head">
+    <h1 class="page-title">{{ 'turno.hola' | translate: { name: nombre() } }}</h1>
+    <p class="page-lead">
+      {{ hoy | date: 'EEEE d MMMM' : '' : language.current() }}.
+      @if (cargado() && activas()) {
+        {{ 'turno.resumen' | translate: { hechas: hechas(), total: activas() } }}
+      }
+    </p>
+  </header>
+
+  @if (cargado()) {
+    @let actual = foco();
+    <section class="now" [attr.data-tipo]="actual.tipo" aria-live="polite">
+      @switch (actual.tipo) {
+        @case ('sigue') {
+          <p class="now__label">{{ 'turno.sigue' | translate }}</p>
+          <h2 class="now__title">{{ oracion(actual.ronda.rutina) }}</h2>
+          <p class="now__meta">
+            <span class="num">{{ hora(actual.ronda.fechaProgramada) }}</span>
+            <span>{{ oracion(actual.ronda.area) }}</span>
+            <span>{{
+              'turno.avance'
+                | translate
+                  : { hechas: actual.ronda.tareasCompletadas, total: actual.ronda.tareasTotal }
+            }}</span>
+          </p>
+          <a mat-flat-button class="button-xl now__cta" [routerLink]="['/rondas', actual.ronda.id]">
+            {{ 'turno.continuar' | translate }}
+          </a>
+        }
+        @case ('toca') {
+          <p class="now__label">{{ 'turno.toca' | translate }}</p>
+          <h2 class="now__title">{{ oracion(actual.ronda.rutina) }}</h2>
+          <p class="now__meta">
+            <span class="num">{{ hora(actual.ronda.fechaProgramada) }}</span>
+            <span>{{ oracion(actual.ronda.area) }}</span>
+            <span>{{ 'turno.tareas' | translate: { total: actual.ronda.tareasTotal } }}</span>
+          </p>
+          <button
+            mat-flat-button
+            type="button"
+            class="button-xl now__cta"
+            [disabled]="iniciando()"
+            (click)="empezar(actual.ronda)"
+          >
+            {{ 'ronda.empezar' | translate }}
+          </button>
+        }
+        @case ('siguiente') {
+          <p class="now__label">{{ 'turno.siguiente' | translate }}</p>
+          <h2 class="now__title">{{ oracion(actual.ronda.rutina) }}</h2>
+          <p class="now__meta">
+            <span class="num">{{ hora(actual.ronda.fechaProgramada) }}</span>
+            <span>{{ oracion(actual.ronda.area) }}</span>
+          </p>
+          <a
+            mat-stroked-button
+            class="button-xl now__cta"
+            [routerLink]="['/rondas', actual.ronda.id]"
+          >
+            {{ 'turno.ver' | translate }}
+          </a>
+        }
+        @case ('libre') {
+          <h2 class="now__title">{{ 'turno.libre' | translate }}</h2>
+          <p class="now__meta">{{ 'turno.libreTexto' | translate }}</p>
+        }
+      }
+    </section>
+
+    <section class="day" [attr.aria-label]="'turno.dia' | translate">
+      <h2 class="day__title">{{ 'turno.dia' | translate }}</h2>
+      @if (!horas().length) {
+        <p class="day__empty">{{ 'turno.sinRondas' | translate }}</p>
+      }
+      <ol class="timeline">
+        @for (grupo of horas(); track grupo.hora) {
+          @if (grupo.hora === horaActual()) {
+            <li class="timeline__now">
+              <span class="num">{{ horaAhora() }}</span>
+              {{ 'turno.ahora' | translate }}
+            </li>
+          }
+          <li class="slot">
+            <span class="slot__hour num">{{ grupo.hora }}</span>
+            <div class="slot__items">
+              @for (ronda of grupo.items; track ronda.id) {
+                <a
+                  class="item"
+                  [routerLink]="['/rondas', ronda.id]"
+                  [attr.data-estado]="ronda.estado"
+                >
+                  <span class="item__main">
+                    <strong>{{ oracion(ronda.rutina) }}</strong>
+                    <span class="item__sub">
+                      {{ oracion(ronda.area) }}
+                      @if (ronda.operador && !esMia(ronda)) {
+                        &nbsp;&ndash; {{ ronda.operador }}
+                      }
+                    </span>
+                  </span>
+                  <span class="item__side">
+                    @if (ronda.estado === 'EN_CURSO') {
+                      <span class="item__count num"
+                        >{{ ronda.tareasCompletadas }}/{{ ronda.tareasTotal }}</span
+                      >
+                    }
+                    @if (ronda.incidenciasAbiertas) {
+                      <mat-icon
+                        class="item__alert"
+                        [attr.aria-label]="'turno.conIncidencia' | translate"
+                        >report</mat-icon
+                      >
+                    }
+                    <app-status-component [estado]="ronda.estado" />
+                  </span>
+                </a>
+              }
+            </div>
+          </li>
+        }
+      </ol>
+    </section>
+  }
+</div>

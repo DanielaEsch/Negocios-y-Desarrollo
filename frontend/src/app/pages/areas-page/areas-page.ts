@@ -26,8 +26,8 @@ import { NotificationService } from '../../services/notification/notification.se
 import { AreaFormDialog, AreaFormDialogData } from './area-form-dialog/area-form-dialog';
 
 /**
- * Catalogo de areas. Todos los perfiles consultan; supervisor y administrador crean y
- * editan; solo el administrador elimina.
+ * Catalogo de areas. Solo el administrador entra aqui (la ruta y el backend lo exigen):
+ * crea, edita y elimina.
  */
 @Component({
   selector: 'app-areas-page',
@@ -53,7 +53,7 @@ export class AreasPage implements OnInit {
   private readonly notification = inject(NotificationService);
   private readonly destroyRef = inject(DestroyRef);
 
-  protected readonly canEdit = computed(() => this.auth.hasRole('SUPERVISOR', 'ADMINISTRADOR'));
+  protected readonly canEdit = computed(() => this.auth.hasRole('ADMINISTRADOR'));
   protected readonly canDelete = computed(() => this.auth.hasRole('ADMINISTRADOR'));
   protected readonly search = new FormControl('', { nonNullable: true });
 

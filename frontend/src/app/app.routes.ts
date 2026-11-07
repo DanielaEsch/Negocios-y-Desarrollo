@@ -1,10 +1,10 @@
 import { Routes } from '@angular/router';
 import { LayoutComponent } from './components/layout-component/layout-component';
-import { authGuard, guestGuard } from './services/guards/auth.guard';
+import { authGuard, guestGuard, homeGuard, roleGuard } from './services/guards/auth.guard';
 
 /**
  * Rutas: el login va solo; todo lo demas vive dentro del layout y requiere sesion.
- * Cada modulo se carga bajo demanda.
+ * La raiz manda a la pantalla de inicio de cada perfil. Cada modulo se carga bajo demanda.
  */
 export const routes: Routes = [
   {
@@ -18,16 +18,54 @@ export const routes: Routes = [
     component: LayoutComponent,
     canActivate: [authGuard],
     children: [
-      { path: '', pathMatch: 'full', redirectTo: 'inicio' },
+      { path: '', pathMatch: 'full', canActivate: [homeGuard], children: [] },
+      { path: 'inicio', canActivate: [homeGuard], children: [] },
       {
-        path: 'inicio',
-        title: 'TaskIn',
-        loadComponent: () => import('./pages/home-page/home-page').then((m) => m.HomePage),
+        path: 'turno',
+        title: 'Mi turno | TaskIn',
+        loadComponent: () => import('./pages/turno-page/turno-page').then((m) => m.TurnoPage),
+      },
+      {
+        path: 'rondas/:id',
+        title: 'Ronda | TaskIn',
+        loadComponent: () => import('./pages/ronda-page/ronda-page').then((m) => m.RondaPage),
+      },
+      {
+        path: 'reportes',
+        title: 'Mis reportes | TaskIn',
+        loadComponent: () =>
+          import('./pages/reportes-page/reportes-page').then((m) => m.ReportesPage),
+      },
+      {
+        path: 'tablero',
+        title: 'Tablero | TaskIn',
+        canActivate: [roleGuard('SUPERVISOR', 'ADMINISTRADOR')],
+        loadComponent: () => import('./pages/tablero-page/tablero-page').then((m) => m.TableroPage),
+      },
+      {
+        path: 'incidencias',
+        title: 'Incidencias | TaskIn',
+        canActivate: [roleGuard('SUPERVISOR', 'ADMINISTRADOR')],
+        loadComponent: () =>
+          import('./pages/incidencias-page/incidencias-page').then((m) => m.IncidenciasPage),
+      },
+      {
+        path: 'rutinas',
+        title: 'Rutinas | TaskIn',
+        canActivate: [roleGuard('ADMINISTRADOR')],
+        loadComponent: () => import('./pages/rutinas-page/rutinas-page').then((m) => m.RutinasPage),
       },
       {
         path: 'areas',
         title: 'Areas | TaskIn',
+        canActivate: [roleGuard('ADMINISTRADOR')],
         loadChildren: () => import('./pages/areas-page/areas.routes').then((m) => m.AREAS_ROUTES),
+      },
+      {
+        path: 'equipo',
+        title: 'Equipo | TaskIn',
+        canActivate: [roleGuard('ADMINISTRADOR')],
+        loadComponent: () => import('./pages/equipo-page/equipo-page').then((m) => m.EquipoPage),
       },
       {
         path: '**',

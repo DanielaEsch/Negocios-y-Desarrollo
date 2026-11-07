@@ -1,63 +1,102 @@
 <main class="login">
-  <section class="login__card" aria-labelledby="login-title">
-    <app-brand-component size="large" />
-
-    <h1 id="login-title" class="login__title">{{ 'login.title' | translate }}</h1>
-    <p class="login__subtitle">{{ 'login.subtitle' | translate }}</p>
-
-    <div class="login__notice" role="note">
-      <mat-icon aria-hidden="true">info</mat-icon>
-      <span>{{ 'login.simulated' | translate }}</span>
-    </div>
-
-    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'login.email' | translate }}</mat-label>
-        <input matInput type="email" formControlName="correo" autocomplete="username" />
-        @if (form.controls.correo.hasError('required')) {
-          <mat-error>{{ 'validation.required' | translate }}</mat-error>
-        } @else if (form.controls.correo.hasError('email')) {
-          <mat-error>{{ 'validation.email' | translate }}</mat-error>
-        }
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'login.password' | translate }}</mat-label>
-        <input
-          matInput
-          [type]="hidePassword() ? 'password' : 'text'"
-          formControlName="contrasena"
-          autocomplete="current-password"
-        />
-        <button
-          mat-icon-button
-          matSuffix
-          type="button"
-          [attr.aria-label]="(hidePassword() ? 'login.show' : 'login.hide') | translate"
-          (click)="hidePassword.set(!hidePassword())"
-        >
-          <mat-icon>{{ hidePassword() ? 'visibility' : 'visibility_off' }}</mat-icon>
-        </button>
-        @if (form.controls.contrasena.hasError('required')) {
-          <mat-error>{{ 'validation.required' | translate }}</mat-error>
-        } @else if (form.controls.contrasena.hasError('minlength')) {
-          <mat-error>{{ 'validation.minlength' | translate: { min: 8 } }}</mat-error>
-        }
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'login.role' | translate }}</mat-label>
-        <mat-select formControlName="rol">
-          @for (rol of roles; track rol) {
-            <mat-option [value]="rol">{{ 'roles.' + rol | translate }}</mat-option>
+  <section class="paper" aria-hidden="true">
+    <div class="paper__sheet">
+      <p class="paper__title">{{ 'login.paper.title' | translate }}</p>
+      <table class="paper__grid">
+        <thead>
+          <tr>
+            <th></th>
+            @for (columna of columnas; track columna) {
+              <th>{{ columna | translate }}</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (fila of hoja; track fila.hora) {
+            <tr>
+              <th class="num">{{ fila.hora }}</th>
+              @for (marca of fila.marcas; track $index) {
+                <td [attr.data-marca]="marca">
+                  @if (marca === 'ok') {
+                    <span>&#10003;</span>
+                  } @else if (marca === 'no') {
+                    <span>&#10007;</span>
+                  }
+                </td>
+              }
+            </tr>
           }
-        </mat-select>
-        <mat-hint>{{ 'login.roleHint' | translate }}</mat-hint>
-      </mat-form-field>
+        </tbody>
+      </table>
+    </div>
+    <p class="paper__caption">{{ 'login.paper.caption' | translate }}</p>
+  </section>
 
-      <button mat-flat-button type="submit" class="login__submit" [disabled]="submitting()">
-        {{ 'login.submit' | translate }}
-      </button>
-    </form>
+  <section class="form-side" aria-labelledby="login-title">
+    <div class="form-side__inner">
+      <app-brand-component size="large" />
+
+      <h1 id="login-title" class="title">{{ 'login.title' | translate }}</h1>
+      <p class="subtitle">{{ 'login.subtitle' | translate }}</p>
+
+      @if (error(); as message) {
+        <p class="form-error" role="alert">{{ message }}</p>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'login.email' | translate }}</mat-label>
+          <input matInput type="email" formControlName="correo" autocomplete="username" />
+          @if (form.controls.correo.hasError('required')) {
+            <mat-error>{{ 'validation.required' | translate }}</mat-error>
+          } @else if (form.controls.correo.hasError('email')) {
+            <mat-error>{{ 'validation.email' | translate }}</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'login.password' | translate }}</mat-label>
+          <input
+            matInput
+            [type]="hidePassword() ? 'password' : 'text'"
+            formControlName="contrasena"
+            autocomplete="current-password"
+          />
+          <button
+            mat-icon-button
+            matSuffix
+            type="button"
+            [attr.aria-label]="(hidePassword() ? 'login.show' : 'login.hide') | translate"
+            (click)="hidePassword.set(!hidePassword())"
+          >
+            <mat-icon>{{ hidePassword() ? 'visibility' : 'visibility_off' }}</mat-icon>
+          </button>
+          @if (form.controls.contrasena.hasError('required')) {
+            <mat-error>{{ 'validation.required' | translate }}</mat-error>
+          }
+        </mat-form-field>
+
+        <button mat-flat-button type="submit" class="button-xl submit" [disabled]="submitting()">
+          {{ 'login.submit' | translate }}
+        </button>
+      </form>
+
+      <div class="demo">
+        <p class="demo__label">{{ 'login.demo' | translate }}</p>
+        <div class="demo__accounts">
+          @for (cuenta of cuentas; track cuenta.correo) {
+            <button
+              type="button"
+              class="demo__account"
+              [disabled]="submitting()"
+              (click)="usar(cuenta)"
+            >
+              <strong>{{ cuenta.nombre }}</strong>
+              <span>{{ 'roles.' + cuenta.rol | translate }}</span>
+            </button>
+          }
+        </div>
+      </div>
+    </div>
   </section>
 </main>

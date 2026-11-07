@@ -1,0 +1,50 @@
+<div class="page reportes">
+  <header class="head">
+    <h1 class="page-title">{{ 'reportes.title' | translate }}</h1>
+    <p class="page-lead">{{ 'reportes.lead' | translate }}</p>
+  </header>
+
+  @if (cargado() && !incidencias().length) {
+    <p class="empty">{{ 'reportes.vacio' | translate }}</p>
+  }
+
+  <ul class="list">
+    @for (incidencia of incidencias(); track incidencia.id) {
+      <li class="report" [attr.data-estado]="incidencia.estado">
+        <div class="report__top">
+          <span>
+            <strong>{{ oracion(incidencia.rutina) }}</strong>
+            &ndash; {{ oracion(incidencia.area) }}
+          </span>
+          <span class="report__date num">
+            {{ incidencia.fechaReporte | date: 'd MMM, HH:mm' : '' : language.current() }}
+          </span>
+        </div>
+        <p class="report__text">{{ incidencia.descripcion }}</p>
+
+        <ol class="steps" [attr.aria-label]="'reportes.seguimiento' | translate">
+          @for (paso of pasos; track paso) {
+            <li
+              class="step"
+              [class.step--on]="alcanzado(incidencia, paso)"
+              [attr.aria-current]="incidencia.estado === paso ? 'step' : null"
+            >
+              <span class="step__dot" aria-hidden="true"></span>
+              {{ 'reportes.paso.' + paso | translate }}
+            </li>
+          }
+        </ol>
+
+        @if (incidencia.comentarioResolucion) {
+          <p class="report__answer">
+            <span class="report__answer-label">{{ 'reportes.respuesta' | translate }}</span>
+            {{ incidencia.comentarioResolucion }}
+          </p>
+        }
+        <a class="report__link" [routerLink]="['/rondas', incidencia.idEjecucion]">
+          {{ 'reportes.verRonda' | translate }}
+        </a>
+      </li>
+    }
+  </ul>
+</div>

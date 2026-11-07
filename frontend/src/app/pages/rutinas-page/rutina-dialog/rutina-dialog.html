@@ -1,0 +1,128 @@
+<h2 mat-dialog-title>
+  {{ (data.rutina ? 'rutinas.editar' : 'rutinas.nueva') | translate }}
+</h2>
+<mat-dialog-content>
+  <form [formGroup]="form" class="form" (ngSubmit)="guardar()" id="rutina-form">
+    @if (error(); as message) {
+      <p class="form-error" role="alert">{{ message }}</p>
+    }
+
+    <div class="row">
+      <mat-form-field appearance="outline" class="grow">
+        <mat-label>{{ 'rutinas.nombre' | translate }}</mat-label>
+        <input matInput formControlName="nombre" [maxlength]="max.nombre" cdkFocusInitial />
+        @if (form.controls.nombre.hasError('required')) {
+          <mat-error>{{ 'validation.required' | translate }}</mat-error>
+        }
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'rutinas.area' | translate }}</mat-label>
+        <mat-select formControlName="idArea">
+          @for (area of data.areas; track area.id) {
+            <mat-option [value]="area.id">{{ oracion(area.nombre) }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'rutinas.descripcion' | translate }}</mat-label>
+      <input matInput formControlName="descripcion" [maxlength]="max.descripcion" />
+    </mat-form-field>
+
+    <fieldset class="block">
+      <legend>{{ 'rutinas.cuando' | translate }}</legend>
+      <mat-button-toggle-group
+        formControlName="frecuencia"
+        class="freq"
+        [hideSingleSelectionIndicator]="true"
+      >
+        @for (f of frecuencias; track f) {
+          <mat-button-toggle [value]="f">{{ 'frecuencia.' + f | translate }}</mat-button-toggle>
+        }
+      </mat-button-toggle-group>
+
+      <div class="row">
+        @if (campos().dia) {
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'rutinas.dia' | translate }}</mat-label>
+            <mat-select formControlName="diaSemana">
+              @for (d of dias; track d) {
+                <mat-option [value]="d">{{ 'dias.' + d | translate }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        }
+        @if (campos().inicio) {
+          <mat-form-field appearance="outline">
+            <mat-label>{{
+              (campos().fin ? 'rutinas.desde' : 'rutinas.hora') | translate
+            }}</mat-label>
+            <input matInput type="time" step="3600" formControlName="horaInicio" />
+          </mat-form-field>
+        }
+        @if (campos().fin) {
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'rutinas.hasta' | translate }}</mat-label>
+            <input matInput type="time" step="3600" formControlName="horaFin" />
+          </mat-form-field>
+        }
+      </div>
+      <p class="sentence">{{ frase() }}</p>
+    </fieldset>
+
+    <fieldset class="block">
+      <legend>{{ 'rutinas.tareas' | translate }}</legend>
+      <p class="form-note">{{ 'rutinas.tareasHint' | translate }}</p>
+      <ol class="tasks" formArrayName="tareas">
+        @for (control of tareas.controls; track control; let i = $index) {
+          <li class="task">
+            <span class="task__n num">{{ i + 1 }}</span>
+            <mat-form-field appearance="outline" class="grow" subscriptSizing="dynamic">
+              <input
+                matInput
+                [formControlName]="i"
+                [maxlength]="max.tarea"
+                [attr.aria-label]="'rutinas.tareaN' | translate: { n: i + 1 }"
+                [placeholder]="'rutinas.tareaPlaceholder' | translate"
+              />
+            </mat-form-field>
+            <button
+              mat-icon-button
+              type="button"
+              [disabled]="i === 0"
+              (click)="subir(i)"
+              [attr.aria-label]="'rutinas.subir' | translate"
+            >
+              <mat-icon>arrow_upward</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              type="button"
+              [disabled]="tareas.length === 1"
+              (click)="quitarTarea(i)"
+              [attr.aria-label]="'rutinas.quitar' | translate"
+            >
+              <mat-icon>close</mat-icon>
+            </button>
+          </li>
+        }
+      </ol>
+      <button
+        mat-button
+        type="button"
+        [disabled]="tareas.length >= max.tareas"
+        (click)="agregarTarea()"
+      >
+        <mat-icon>add</mat-icon>
+        {{ 'rutinas.agregarTarea' | translate }}
+      </button>
+    </fieldset>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button type="button" mat-dialog-close>{{ 'actions.cancel' | translate }}</button>
+  <button mat-flat-button type="submit" form="rutina-form" [disabled]="guardando()">
+    {{ (data.rutina ? 'actions.save' : 'rutinas.crear') | translate }}
+  </button>
+</mat-dialog-actions>

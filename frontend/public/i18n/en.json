@@ -32,36 +32,36 @@
     "theme": "Toggle theme",
     "account": "Account",
     "logout": "Sign out",
-    "soon": "Coming soon"
+    "soon": "Coming soon",
+    "navigation": "Main navigation",
+    "config": "Settings"
   },
   "menu": {
-    "home": "Home",
     "areas": "Areas",
-    "areasDescription": "The parts of your business where routines happen.",
-    "routines": "Routines",
-    "routinesDescription": "Recurring activities per area, with frequency and owner.",
-    "executions": "Executions",
-    "executionsDescription": "Each time someone performs a routine, step by step.",
-    "incidents": "Incidents",
-    "incidentsDescription": "What went wrong during an execution and its follow-up."
+    "turno": "My shift",
+    "reportes": "My reports",
+    "tablero": "Board",
+    "incidencias": "Incidents",
+    "rutinas": "Routines",
+    "equipo": "Team"
   },
   "login": {
-    "title": "Sign in",
-    "subtitle": "Keep track of your business routines and incidents.",
-    "simulated": "Demo access: the backend has no authentication yet. Any email with an 8-character password signs in with the profile you choose.",
+    "title": "Start your shift",
+    "subtitle": "Your business routines, checked on time and visible to everyone.",
     "email": "Email",
     "password": "Password",
     "show": "Show password",
     "hide": "Hide password",
-    "role": "Profile",
-    "roleHint": "Defines what you can do on each screen.",
-    "submit": "Sign in"
-  },
-  "home": {
-    "welcome": "Hi, {{name}}",
-    "subtitle": "Pick a module to get started.",
-    "modules": "Modules",
-    "open": "Open"
+    "submit": "Sign in",
+    "demo": "Demo accounts (password TaskIn2026)",
+    "paper": {
+      "title": "Restroom check",
+      "caption": "The sheet on the restroom door, now on the phone of whoever does the round.",
+      "jabon": "Soap",
+      "lavabos": "Sinks",
+      "piso": "Floor",
+      "basura": "Trash"
+    }
   },
   "table": {
     "empty": "No records.",
@@ -90,7 +90,7 @@
   },
   "notFound": {
     "message": "The page you are looking for does not exist.",
-    "back": "Back to home"
+    "back": "Back to start"
   },
   "paginator": {
     "itemsPerPage": "Items per page",
@@ -100,5 +100,234 @@
     "last": "Last page",
     "range": "{{start}} – {{end}} of {{length}}",
     "empty": "0 of 0"
+  },
+  "perfil": {
+    "plural": {
+      "OPERADOR": "Operators",
+      "SUPERVISOR": "Supervisors",
+      "ADMINISTRADOR": "Administration"
+    }
+  },
+  "estado": {
+    "ronda": {
+      "PROGRAMADA": "To do",
+      "EN_CURSO": "In progress",
+      "COMPLETADA": "Done",
+      "CANCELADA": "Cancelled",
+      "VENCIDA": "Missed"
+    },
+    "incidencia": {
+      "PENDIENTE": "Open",
+      "REVISION": "In review",
+      "RESUELTA": "Resolved"
+    }
+  },
+  "tiempo": {
+    "minutos": "{{n}} min ago",
+    "horas": "{{n}} h ago",
+    "dias": "{{n}} d ago"
+  },
+  "dias": {
+    "1": "Monday",
+    "2": "Tuesday",
+    "3": "Wednesday",
+    "4": "Thursday",
+    "5": "Friday",
+    "6": "Saturday",
+    "7": "Sunday"
+  },
+  "frecuencia": {
+    "CADA_2_HORAS": "Every 2 hours",
+    "DIARIA": "Daily",
+    "SEMANAL": "Weekly",
+    "POR_EVENTO": "When needed",
+    "texto": {
+      "CADA_2_HORAS": "Every 2 hours, from {{inicio}} to {{fin}}",
+      "DIARIA": "Every day at {{inicio}}",
+      "SEMANAL": "Every {{dia}} at {{inicio}}",
+      "POR_EVENTO": "When needed, started by hand"
+    }
+  },
+  "turno": {
+    "hola": "Hi, {{name}}",
+    "resumen": "{{hechas}} of {{total}} rounds done today.",
+    "sigue": "You have a round in progress",
+    "toca": "Due now",
+    "siguiente": "Up next",
+    "libre": "Nothing pending right now",
+    "libreTexto": "New rounds will show up here.",
+    "avance": "{{hechas}} of {{total}} tasks",
+    "tareas": "{{total}} tasks",
+    "continuar": "Continue round",
+    "ver": "View round",
+    "dia": "Your day",
+    "sinRondas": "No rounds in your areas today.",
+    "ahora": "now",
+    "conIncidencia": "Has an open report"
+  },
+  "ronda": {
+    "volver": "Back",
+    "laLlevasTu": "You are on it",
+    "laLleva": "{{name}} is on it",
+    "desde": "since {{hora}}",
+    "progreso": "{{hechas}} of {{total}} tasks",
+    "antesDeEmpezar": "Tap Start to take the round and check off its tasks.",
+    "soloQuienLaTomo": "Only the person who took the round can check its tasks.",
+    "incidencias": "Reports for this round",
+    "empezar": "Start round",
+    "terminar": "Finish round",
+    "faltan": "{{n}} tasks left",
+    "reportar": "Report a problem",
+    "cancelar": "Cancel round",
+    "cancelarTitulo": "Cancel round",
+    "cancelarTexto": "Cancel {{rutina}} at {{hora}}? It will no longer count toward today's compliance.",
+    "terminada": "Round finished.",
+    "conflicto": "Someone else changed this round. Here is how it looks now."
+  },
+  "reportar": {
+    "title": "Report a problem",
+    "hint": "The supervisor of {{rutina}} will be notified.",
+    "atajos": "Shortcuts",
+    "atajo": {
+      "falta": "Something is missing",
+      "roto": "Something is broken",
+      "sucio": "It is dirty",
+      "otro": "Something else"
+    },
+    "inicio": {
+      "falta": "Missing ",
+      "roto": "Broken ",
+      "sucio": "Dirty ",
+      "otro": ""
+    },
+    "descripcion": "What happened?",
+    "obligatorio": "Describe what happened.",
+    "enviar": "Send report",
+    "enviado": "Report sent to the supervisor."
+  },
+  "reportes": {
+    "title": "My reports",
+    "lead": "What you reported and where each one stands.",
+    "vacio": "You have not reported anything yet.",
+    "seguimiento": "Progress",
+    "paso": {
+      "PENDIENTE": "Sent",
+      "REVISION": "In review",
+      "RESUELTA": "Resolved"
+    },
+    "respuesta": "What was done",
+    "verRonda": "View the round"
+  },
+  "tablero": {
+    "title": "Today's board",
+    "resumen": "{{hechas}} of {{total}} rounds done.",
+    "cumplimiento": "Compliance: {{pct}}%.",
+    "sinRondas": "No rounds on this day.",
+    "dia": "Day",
+    "anterior": "Previous day",
+    "siguiente": "Next day",
+    "hoy": "Today",
+    "hoja": "Control sheet",
+    "rutina": "Routine",
+    "conIncidencia": "Open report",
+    "atender": "Needs attention",
+    "verIncidencias": "See all",
+    "todoBien": "Nothing needs attention. Everything is on time.",
+    "deLas": "at",
+    "porArea": "By area",
+    "tendencia": "Last 7 days",
+    "tendenciaNota": "Rounds done out of those already finished or missed."
+  },
+  "incidencias": {
+    "title": "Incidents",
+    "lead": "Handle what your team reported. To close one, write down what was done.",
+    "filtrar": "Filter by area",
+    "todas": "All",
+    "columna": {
+      "PENDIENTE": "Open",
+      "REVISION": "In review",
+      "RESUELTA": "Resolved"
+    },
+    "vacia": {
+      "PENDIENTE": "Nothing open.",
+      "REVISION": "Nobody is reviewing anything.",
+      "RESUELTA": "Nothing resolved yet."
+    },
+    "reportadaPor": "Reported by {{name}}, {{hace}}",
+    "laAtiende": "{{name}} is handling it",
+    "resueltaPor": "Resolved by {{name}}, {{hace}}",
+    "atender": "Handle",
+    "atendida": "Incident in review.",
+    "marcarResuelta": "Mark resolved",
+    "resuelta": "Incident resolved.",
+    "masResueltas": "And {{n}} more resolved.",
+    "resolverTitulo": "Resolve incident",
+    "queSeHizo": "What was done?",
+    "queSeHizoHint": "The person who reported it will see this.",
+    "comentarioObligatorio": "Write what was done to close it."
+  },
+  "rutinas": {
+    "title": "Routines",
+    "lead": "What gets checked in each area and how often. When you save, today's rounds are rescheduled.",
+    "nueva": "New routine",
+    "editar": "Edit routine",
+    "crear": "Create routine",
+    "vacio": "No routines yet. Create the first one.",
+    "nombre": "Name",
+    "area": "Area",
+    "descripcion": "Description (optional)",
+    "cuando": "When is it done?",
+    "dia": "Day",
+    "hora": "Time",
+    "desde": "From",
+    "hasta": "To",
+    "tareas": "Tasks",
+    "tareasHint": "In the order they are done. Each one is a checkbox on the list.",
+    "tareaN": "Task {{n}}",
+    "tareaPlaceholder": "E.g. Check soap",
+    "agregarTarea": "Add task",
+    "subir": "Move up",
+    "quitar": "Remove",
+    "nTareas": "{{n}} tasks",
+    "lanzar": "Start now",
+    "lanzada": "A round of {{name}} was created.",
+    "mas": "More actions",
+    "creada": "Routine {{name}} created.",
+    "guardada": "Routine {{name}} saved.",
+    "eliminada": "Routine {{name}} deleted.",
+    "eliminarTitulo": "Delete routine",
+    "eliminarTexto": "Delete {{name}}? Its pending rounds are cancelled; history is kept."
+  },
+  "equipo": {
+    "title": "Team",
+    "lead": "Who works at the business and which areas they cover.",
+    "agregar": "Add person",
+    "agregarBoton": "Add",
+    "areasDe": "Areas for {{name}}",
+    "nombre": "Full name",
+    "correo": "Email",
+    "correoInvalido": "Enter a valid email.",
+    "contrasena": "Initial password",
+    "contrasenaHint": "At least 8 characters. Share it in person.",
+    "queAreas": "Areas covered",
+    "consentimiento": "This person read and accepted the privacy notice.",
+    "consentimientoNota": "Without consent they cannot be registered (LFPDPPP).",
+    "tu": "(you)",
+    "todasLasAreas": "All areas",
+    "sinAreas": "No areas assigned",
+    "aceptoAviso": "Accepted the notice on {{fecha}}",
+    "sinConsentimiento": "Withdrew consent",
+    "cambiarAreas": "Change areas",
+    "mas": "More actions for {{name}}",
+    "promover": "Make supervisor",
+    "promoverTitulo": "Make supervisor",
+    "promoverTexto": "{{name}} will see the board and handle incidents in their areas.",
+    "promovido": "{{name}} is now a supervisor.",
+    "desactivar": "Deactivate",
+    "desactivarTitulo": "Deactivate",
+    "desactivarTexto": "{{name}} will no longer be able to sign in. Their history is kept.",
+    "desactivado": "{{name}} was deactivated.",
+    "agregado": "{{name}} joined the team.",
+    "areasGuardadas": "Areas for {{name}} saved."
   }
 }

@@ -32,36 +32,36 @@
     "theme": "Cambiar tema",
     "account": "Cuenta",
     "logout": "Cerrar sesión",
-    "soon": "Próximamente"
+    "soon": "Próximamente",
+    "navigation": "Navegación principal",
+    "config": "Configuración"
   },
   "menu": {
-    "home": "Inicio",
     "areas": "Áreas",
-    "areasDescription": "Las áreas del negocio donde se ejecutan las rutinas.",
-    "routines": "Rutinas",
-    "routinesDescription": "Actividades periódicas por área, con su frecuencia y responsable.",
-    "executions": "Ejecuciones",
-    "executionsDescription": "Cada vez que alguien realiza una rutina, paso a paso.",
-    "incidents": "Incidencias",
-    "incidentsDescription": "Lo que salió mal en una ejecución y su seguimiento."
+    "turno": "Mi turno",
+    "reportes": "Mis reportes",
+    "tablero": "Tablero",
+    "incidencias": "Incidencias",
+    "rutinas": "Rutinas",
+    "equipo": "Equipo"
   },
   "login": {
-    "title": "Inicia sesión",
-    "subtitle": "Controla las rutinas e incidencias de tu negocio.",
-    "simulated": "Acceso de demostración: todavía no hay autenticación en el backend. Cualquier correo y una contraseña de 8 caracteres entran con el perfil que elijas.",
+    "title": "Entra a tu turno",
+    "subtitle": "Las rutinas de tu negocio, marcadas a tiempo y a la vista de todos.",
     "email": "Correo",
     "password": "Contraseña",
     "show": "Mostrar contraseña",
     "hide": "Ocultar contraseña",
-    "role": "Perfil",
-    "roleHint": "Define qué puedes hacer en cada pantalla.",
-    "submit": "Entrar"
-  },
-  "home": {
-    "welcome": "Hola, {{name}}",
-    "subtitle": "Elige un módulo para empezar.",
-    "modules": "Módulos",
-    "open": "Abrir"
+    "submit": "Entrar",
+    "demo": "Cuentas de demostración (contraseña TaskIn2026)",
+    "paper": {
+      "title": "Revisión de baños",
+      "caption": "La hoja de la puerta del baño, ahora en el teléfono de quien hace la ronda.",
+      "jabon": "Jabón",
+      "lavabos": "Lavabos",
+      "piso": "Piso",
+      "basura": "Basura"
+    }
   },
   "table": {
     "empty": "No hay registros.",
@@ -100,5 +100,234 @@
     "last": "Última página",
     "range": "{{start}} – {{end}} de {{length}}",
     "empty": "0 de 0"
+  },
+  "perfil": {
+    "plural": {
+      "OPERADOR": "Operadores",
+      "SUPERVISOR": "Supervisores",
+      "ADMINISTRADOR": "Administración"
+    }
+  },
+  "estado": {
+    "ronda": {
+      "PROGRAMADA": "Por hacer",
+      "EN_CURSO": "En curso",
+      "COMPLETADA": "Hecha",
+      "CANCELADA": "Cancelada",
+      "VENCIDA": "Vencida"
+    },
+    "incidencia": {
+      "PENDIENTE": "Sin atender",
+      "REVISION": "En revisión",
+      "RESUELTA": "Resuelta"
+    }
+  },
+  "tiempo": {
+    "minutos": "hace {{n}} min",
+    "horas": "hace {{n}} h",
+    "dias": "hace {{n}} d"
+  },
+  "dias": {
+    "1": "lunes",
+    "2": "martes",
+    "3": "miércoles",
+    "4": "jueves",
+    "5": "viernes",
+    "6": "sábado",
+    "7": "domingo"
+  },
+  "frecuencia": {
+    "CADA_2_HORAS": "Cada 2 horas",
+    "DIARIA": "Diaria",
+    "SEMANAL": "Semanal",
+    "POR_EVENTO": "Cuando se necesite",
+    "texto": {
+      "CADA_2_HORAS": "Cada 2 horas, de {{inicio}} a {{fin}}",
+      "DIARIA": "Todos los días a las {{inicio}}",
+      "SEMANAL": "Cada {{dia}} a las {{inicio}}",
+      "POR_EVENTO": "Cuando se necesite, se lanza a mano"
+    }
+  },
+  "turno": {
+    "hola": "Hola, {{name}}",
+    "resumen": "Llevas {{hechas}} de {{total}} rondas del día.",
+    "sigue": "Tienes una ronda a medias",
+    "toca": "Ya toca",
+    "siguiente": "Lo siguiente",
+    "libre": "Nada pendiente por ahora",
+    "libreTexto": "Cuando haya una ronda nueva aparecerá aquí.",
+    "avance": "{{hechas}} de {{total}} tareas",
+    "tareas": "{{total}} tareas",
+    "continuar": "Continuar ronda",
+    "ver": "Ver ronda",
+    "dia": "Tu día",
+    "sinRondas": "Hoy no hay rondas en tus áreas.",
+    "ahora": "ahora",
+    "conIncidencia": "Tiene un reporte abierto"
+  },
+  "ronda": {
+    "volver": "Volver",
+    "laLlevasTu": "La llevas tú",
+    "laLleva": "La lleva {{name}}",
+    "desde": "desde las {{hora}}",
+    "progreso": "{{hechas}} de {{total}} tareas",
+    "antesDeEmpezar": "Toca Empezar para tomar la ronda y marcar sus tareas.",
+    "soloQuienLaTomo": "Solo quien tomó la ronda puede marcar sus tareas.",
+    "incidencias": "Reportes de esta ronda",
+    "empezar": "Empezar ronda",
+    "terminar": "Terminar ronda",
+    "faltan": "Faltan {{n}} tareas",
+    "reportar": "Reportar un problema",
+    "cancelar": "Cancelar ronda",
+    "cancelarTitulo": "Cancelar ronda",
+    "cancelarTexto": "¿Cancelar {{rutina}} de las {{hora}}? Ya no contará para el cumplimiento del día.",
+    "terminada": "Ronda terminada.",
+    "conflicto": "Alguien más cambió esta ronda. Te mostramos cómo quedó."
+  },
+  "reportar": {
+    "title": "Reportar un problema",
+    "hint": "Se avisa al supervisor de {{rutina}}.",
+    "atajos": "Atajos",
+    "atajo": {
+      "falta": "Falta algo",
+      "roto": "Algo está roto",
+      "sucio": "Está sucio",
+      "otro": "Otra cosa"
+    },
+    "inicio": {
+      "falta": "Falta ",
+      "roto": "Está roto ",
+      "sucio": "Está sucio ",
+      "otro": ""
+    },
+    "descripcion": "¿Qué pasó?",
+    "obligatorio": "Escribe qué pasó.",
+    "enviar": "Enviar reporte",
+    "enviado": "Reporte enviado al supervisor."
+  },
+  "reportes": {
+    "title": "Mis reportes",
+    "lead": "Lo que reportaste y en qué va cada cosa.",
+    "vacio": "Todavía no has reportado nada.",
+    "seguimiento": "Seguimiento",
+    "paso": {
+      "PENDIENTE": "Enviado",
+      "REVISION": "En revisión",
+      "RESUELTA": "Resuelto"
+    },
+    "respuesta": "Lo que se hizo",
+    "verRonda": "Ver la ronda"
+  },
+  "tablero": {
+    "title": "Tablero del día",
+    "resumen": "{{hechas}} de {{total}} rondas hechas.",
+    "cumplimiento": "Cumplimiento: {{pct}} %.",
+    "sinRondas": "No hay rondas este día.",
+    "dia": "Día",
+    "anterior": "Día anterior",
+    "siguiente": "Día siguiente",
+    "hoy": "Hoy",
+    "hoja": "Hoja de control",
+    "rutina": "Rutina",
+    "conIncidencia": "Con reporte abierto",
+    "atender": "Por atender",
+    "verIncidencias": "Ver todas",
+    "todoBien": "Nada por atender. Todo va a tiempo.",
+    "deLas": "de las",
+    "porArea": "Por área",
+    "tendencia": "Últimos 7 días",
+    "tendenciaNota": "Rondas hechas de las que ya vencieron o se terminaron."
+  },
+  "incidencias": {
+    "title": "Incidencias",
+    "lead": "Atiende lo que reportó tu equipo. Para cerrar una, deja escrito qué se hizo.",
+    "filtrar": "Filtrar por área",
+    "todas": "Todas",
+    "columna": {
+      "PENDIENTE": "Sin atender",
+      "REVISION": "En revisión",
+      "RESUELTA": "Resueltas"
+    },
+    "vacia": {
+      "PENDIENTE": "Nada sin atender.",
+      "REVISION": "Nadie está revisando nada.",
+      "RESUELTA": "Aún no hay resueltas."
+    },
+    "reportadaPor": "Reportó {{name}}, {{hace}}",
+    "laAtiende": "La atiende {{name}}",
+    "resueltaPor": "Resolvió {{name}}, {{hace}}",
+    "atender": "Atender",
+    "atendida": "Incidencia en revisión.",
+    "marcarResuelta": "Marcar resuelta",
+    "resuelta": "Incidencia resuelta.",
+    "masResueltas": "Y {{n}} resueltas más.",
+    "resolverTitulo": "Resolver incidencia",
+    "queSeHizo": "¿Qué se hizo?",
+    "queSeHizoHint": "Lo verá quien hizo el reporte.",
+    "comentarioObligatorio": "Escribe qué se hizo para cerrarla."
+  },
+  "rutinas": {
+    "title": "Rutinas",
+    "lead": "Lo que se revisa en cada área y cada cuánto. Al guardar, las rondas de hoy se reprograman solas.",
+    "nueva": "Nueva rutina",
+    "editar": "Editar rutina",
+    "crear": "Crear rutina",
+    "vacio": "Aún no hay rutinas. Crea la primera.",
+    "nombre": "Nombre",
+    "area": "Área",
+    "descripcion": "Descripción (opcional)",
+    "cuando": "¿Cuándo se hace?",
+    "dia": "Día",
+    "hora": "Hora",
+    "desde": "Desde",
+    "hasta": "Hasta",
+    "tareas": "Tareas",
+    "tareasHint": "En el orden en que se hacen. Cada una es una casilla de la lista.",
+    "tareaN": "Tarea {{n}}",
+    "tareaPlaceholder": "Ej. Revisar jabón",
+    "agregarTarea": "Agregar tarea",
+    "subir": "Subir",
+    "quitar": "Quitar",
+    "nTareas": "{{n}} tareas",
+    "lanzar": "Lanzar ahora",
+    "lanzada": "Se creó una ronda de {{name}}.",
+    "mas": "Más acciones",
+    "creada": "Rutina {{name}} creada.",
+    "guardada": "Rutina {{name}} guardada.",
+    "eliminada": "Rutina {{name}} eliminada.",
+    "eliminarTitulo": "Eliminar rutina",
+    "eliminarTexto": "¿Eliminar {{name}}? Se cancelan sus rondas pendientes; el historial se conserva."
+  },
+  "equipo": {
+    "title": "Equipo",
+    "lead": "Quién trabaja en el negocio y qué áreas cubre.",
+    "agregar": "Agregar persona",
+    "agregarBoton": "Agregar",
+    "areasDe": "Áreas de {{name}}",
+    "nombre": "Nombre completo",
+    "correo": "Correo",
+    "correoInvalido": "Escribe un correo válido.",
+    "contrasena": "Contraseña inicial",
+    "contrasenaHint": "Mínimo 8 caracteres. Compártela en persona.",
+    "queAreas": "Áreas que cubre",
+    "consentimiento": "La persona leyó y aceptó el aviso de privacidad.",
+    "consentimientoNota": "Sin su consentimiento no se puede registrar (LFPDPPP).",
+    "tu": "(tú)",
+    "todasLasAreas": "Todas las áreas",
+    "sinAreas": "Sin áreas asignadas",
+    "aceptoAviso": "Aceptó el aviso el {{fecha}}",
+    "sinConsentimiento": "Retiró su consentimiento",
+    "cambiarAreas": "Cambiar áreas",
+    "mas": "Más acciones para {{name}}",
+    "promover": "Hacer supervisor",
+    "promoverTitulo": "Hacer supervisor",
+    "promoverTexto": "{{name}} podrá ver el tablero y atender incidencias de sus áreas.",
+    "promovido": "{{name}} ahora es supervisor.",
+    "desactivar": "Dar de baja",
+    "desactivarTitulo": "Dar de baja",
+    "desactivarTexto": "{{name}} ya no podrá entrar. Su historial se conserva.",
+    "desactivado": "{{name}} se dio de baja.",
+    "agregado": "{{name}} se agregó al equipo.",
+    "areasGuardadas": "Áreas de {{name}} guardadas."
   }
 }

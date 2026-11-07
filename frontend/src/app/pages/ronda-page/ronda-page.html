@@ -1,0 +1,145 @@
+<div class="page ronda-page">
+  <a class="back" [routerLink]="volver()">
+    <span aria-hidden="true">&larr;</span> {{ 'ronda.volver' | translate }}
+  </a>
+
+  @if (noEncontrada(); as message) {
+    <p class="form-error" role="alert">{{ message }}</p>
+  }
+
+  @if (ronda(); as r) {
+    <header class="head">
+      <div class="head__top">
+        <span class="head__time num">{{ hora(r.fechaProgramada) }}</span>
+        <app-status-component [estado]="r.estado" />
+      </div>
+      <h1 class="page-title">{{ oracion(r.rutina) }}</h1>
+      <p class="page-lead">
+        {{ oracion(r.area) }}
+        @if (r.descripcionRutina) {
+          &ndash; {{ oracion(r.descripcionRutina) }}
+        }
+      </p>
+      @if (r.operador) {
+        <p class="head__who">
+          @if (esMia()) {
+            {{ 'ronda.laLlevasTu' | translate }}
+          } @else {
+            {{ 'ronda.laLleva' | translate: { name: r.operador } }}
+          }
+          @if (r.fechaInicio) {
+            {{ 'ronda.desde' | translate: { hora: hora(r.fechaInicio) } }}
+          }
+        </p>
+      }
+    </header>
+
+    <div
+      class="progress"
+      role="progressbar"
+      [attr.aria-valuenow]="hechas()"
+      aria-valuemin="0"
+      [attr.aria-valuemax]="r.tareas.length"
+      [attr.aria-label]="'ronda.progreso' | translate: { hechas: hechas(), total: r.tareas.length }"
+    >
+      @for (tarea of r.tareas; track tarea.idTarea) {
+        <span
+          class="progress__step"
+          [class.progress__step--done]="tarea.estado === 'COMPLETADA'"
+        ></span>
+      }
+    </div>
+    <p class="progress__label num">
+      {{ 'ronda.progreso' | translate: { hechas: hechas(), total: r.tareas.length } }}
+    </p>
+
+    @if (puedeEmpezar()) {
+      <p class="note">{{ 'ronda.antesDeEmpezar' | translate }}</p>
+    } @else if (r.estado === 'EN_CURSO' && !esMia()) {
+      <p class="note">{{ 'ronda.soloQuienLaTomo' | translate }}</p>
+    }
+
+    <ol class="checklist" [class.checklist--locked]="!puedeTrabajar()">
+      @for (tarea of r.tareas; track tarea.idTarea) {
+        <li>
+          <button
+            type="button"
+            class="task"
+            [class.task--done]="tarea.estado === 'COMPLETADA'"
+            [disabled]="!puedeTrabajar() || tarea.estado === 'COMPLETADA' || ocupado()"
+            [attr.aria-pressed]="tarea.estado === 'COMPLETADA'"
+            (click)="marcar(tarea)"
+          >
+            <span class="task__box" aria-hidden="true">
+              @if (tarea.estado === 'COMPLETADA') {
+                <mat-icon>check</mat-icon>
+              }
+            </span>
+            <span class="task__name">{{ tarea.nombre }}</span>
+            @if (tarea.fechaCompletada) {
+              <span class="task__time num">{{ hora(tarea.fechaCompletada) }}</span>
+            }
+          </button>
+        </li>
+      }
+    </ol>
+
+    @if (r.incidencias.length) {
+      <section class="incidents">
+        <h2 class="incidents__title">{{ 'ronda.incidencias' | translate }}</h2>
+        @for (incidencia of r.incidencias; track incidencia.id) {
+          <article class="incident">
+            <div class="incident__top">
+              <app-status-component tipo="incidencia" [estado]="incidencia.estado" />
+              <span class="num">{{ hora(incidencia.fechaReporte) }}</span>
+            </div>
+            <p class="incident__text">{{ incidencia.descripcion }}</p>
+            @if (incidencia.comentarioResolucion) {
+              <p class="incident__answer">{{ incidencia.comentarioResolucion }}</p>
+            }
+          </article>
+        }
+      </section>
+    }
+
+    @if (r.estado !== 'CANCELADA') {
+      <div class="actions">
+        @if (puedeEmpezar()) {
+          <button
+            mat-flat-button
+            type="button"
+            class="button-xl actions__main"
+            [disabled]="ocupado()"
+            (click)="empezar()"
+          >
+            {{ 'ronda.empezar' | translate }}
+          </button>
+        }
+        @if (puedeTrabajar()) {
+          <button
+            mat-flat-button
+            type="button"
+            class="button-xl actions__main"
+            [disabled]="!todasHechas() || ocupado()"
+            (click)="terminar()"
+          >
+            {{
+              todasHechas()
+                ? ('ronda.terminar' | translate)
+                : ('ronda.faltan' | translate: { n: r.tareas.length - hechas() })
+            }}
+          </button>
+        }
+        <button mat-stroked-button type="button" class="button-xl" (click)="reportar()">
+          <mat-icon>campaign</mat-icon>
+          {{ 'ronda.reportar' | translate }}
+        </button>
+        @if (puedeCancelar()) {
+          <button mat-button type="button" class="actions__cancel" (click)="cancelar()">
+            {{ 'ronda.cancelar' | translate }}
+          </button>
+        }
+      </div>
+    }
+  }
+</div>

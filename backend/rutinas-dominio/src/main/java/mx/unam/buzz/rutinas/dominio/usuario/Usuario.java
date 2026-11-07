@@ -58,6 +58,20 @@ public class Usuario {
         return usuario;
     }
 
+    /** Rehidrata un usuario guardado para aplicarle las reglas (promocion, login). */
+    public static Usuario reconstituir(String nombre, String correo, String hashContrasena, Perfil perfil,
+                                       boolean activo, boolean consentimientoDatos,
+                                       LocalDateTime fechaConsentimiento, Set<Long> areas) {
+        Usuario usuario = new Usuario(nombre, correo);
+        usuario.hashContrasena = hashContrasena;
+        usuario.perfil = Objects.requireNonNull(perfil, "perfil");
+        usuario.activo = activo;
+        usuario.consentimientoDatos = consentimientoDatos;
+        usuario.fechaConsentimiento = fechaConsentimiento;
+        usuario.areas.addAll(areas);
+        return usuario;
+    }
+
     /** Valida una contrasena contra el hash guardado. */
     public boolean verificarContrasena(String contrasenaPlana, CifradorContrasena cifrador) {
         return contrasenaPlana != null && cifrador.coincide(contrasenaPlana, hashContrasena);

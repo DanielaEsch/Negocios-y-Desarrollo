@@ -1,12 +1,20 @@
 package mx.unam.buzz.rutinas.web;
 
+import mx.unam.buzz.rutinas.dominio.usuario.Perfil;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.filter.CharacterEncodingFilter;
+
+import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -20,12 +28,27 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Recorre las cuatro capas contra H2: controlador, fachada, servicio y repositorio.
  */
 @SpringBootTest
-@AutoConfigureMockMvc
 @ActiveProfiles("test")
+@Import(SesionesDePrueba.class)
 class AreaControllerTest {
 
     @Autowired
+    private WebApplicationContext context;
+
+    @Autowired
+    private SesionesDePrueba sesiones;
+
     private MockMvc mockMvc;
+
+    /** Todas las peticiones van como administrador, que es quien puede escribir areas. */
+    @BeforeEach
+    void setUp() {
+        String admin = sesiones.crear(Perfil.ADMINISTRADOR, List.of()).bearer();
+        mockMvc = MockMvcBuilders.webAppContextSetup(context)
+                .addFilters(new CharacterEncodingFilter("UTF-8", true))
+                .defaultRequest(get("/").header(HttpHeaders.AUTHORIZATION, admin))
+                .build();
+    }
 
     @Test
     void cicloCompletoDeUnArea() throws Exception {
@@ -64,6 +87,26 @@ class AreaControllerTest {
                 .andExpect(jsonPath("$.title").value("Not Found"))
                 .andExpect(jsonPath("$.detail").value("El área no existe o fue eliminada."))
                 .andExpect(jsonPath("$.instance").value("/areas/" + id));
+    }
+
+    @Test
+    void sinTokenEs401YOperadorNoEscribe() throws Exception {
+        MockMvc anonimo = MockMvcBuilders.webAppContextSetup(context)
+                .addFilters(new CharacterEncodingFilter("UTF-8", true)).build();
+        anonimo.perform(get("/areas"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.code").value(1102));
+        anonimo.perform(get("/areas").header(HttpHeaders.AUTHORIZATION, "Bearer no-es-un-token"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.code").value(1103));
+
+        String operador = sesiones.crear(Perfil.OPERADOR, List.of()).bearer();
+        anonimo.perform(get("/areas").header(HttpHeaders.AUTHORIZATION, operador))
+                .andExpect(status().isOk());
+        anonimo.perform(post("/areas").header(HttpHeaders.AUTHORIZATION, operador)
+                        .contentType(MediaType.APPLICATION_JSON).content("{\"nombre\":\"bodega\"}"))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.code").value(1104));
     }
 
     @Test

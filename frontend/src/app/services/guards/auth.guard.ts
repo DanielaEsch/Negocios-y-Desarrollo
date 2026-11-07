@@ -15,13 +15,19 @@ export const authGuard: CanActivateFn = (_route, state) => {
 /** El login solo se ve sin sesion. */
 export const guestGuard: CanActivateFn = () => {
   const auth = inject(AuthService);
-  return auth.isAuthenticated() ? inject(Router).createUrlTree(['/inicio']) : true;
+  return auth.isAuthenticated() ? inject(Router).createUrlTree([auth.home()]) : true;
+};
+
+/** La raiz manda a la pantalla de inicio del perfil. */
+export const homeGuard: CanActivateFn = () => {
+  const auth = inject(AuthService);
+  return inject(Router).createUrlTree([auth.home()]);
 };
 
 /** Restringe una ruta a ciertos perfiles: `canActivate: [roleGuard('ADMINISTRADOR')]`. */
 export function roleGuard(...roles: Rol[]): CanActivateFn {
   return () => {
     const auth = inject(AuthService);
-    return auth.hasRole(...roles) ? true : inject(Router).createUrlTree(['/inicio']);
+    return auth.hasRole(...roles) ? true : inject(Router).createUrlTree([auth.home()]);
   };
 }

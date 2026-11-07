@@ -1,13 +1,43 @@
 import { MenuItem } from '../models/menu/menu.model';
 
 /**
- * Opciones del menu lateral. Las que tienen `soon` se muestran deshabilitadas hasta
- * que exista su API.
+ * Navegacion por perfil. El operador solo ve lo suyo (su turno y sus reportes); quien
+ * supervisa ve el tablero y las incidencias; el administrador ademas configura.
  */
 export const MENU_ITEMS: MenuItem[] = [
-  { labelKey: 'menu.home', icon: 'home', route: '/inicio' },
-  { labelKey: 'menu.areas', icon: 'domain', route: '/areas' },
-  { labelKey: 'menu.routines', icon: 'event_repeat', route: '/rutinas', soon: true },
-  { labelKey: 'menu.executions', icon: 'task_alt', route: '/ejecuciones', soon: true },
-  { labelKey: 'menu.incidents', icon: 'report', route: '/incidencias', soon: true },
+  { labelKey: 'menu.turno', icon: 'checklist', route: '/turno', roles: ['OPERADOR'] },
+  { labelKey: 'menu.reportes', icon: 'campaign', route: '/reportes', roles: ['OPERADOR'] },
+  {
+    labelKey: 'menu.tablero',
+    icon: 'grid_view',
+    route: '/tablero',
+    roles: ['SUPERVISOR', 'ADMINISTRADOR'],
+  },
+  {
+    labelKey: 'menu.incidencias',
+    icon: 'report',
+    route: '/incidencias',
+    roles: ['SUPERVISOR', 'ADMINISTRADOR'],
+  },
+  {
+    labelKey: 'menu.rutinas',
+    icon: 'event_repeat',
+    route: '/rutinas',
+    roles: ['ADMINISTRADOR'],
+    group: 'config',
+  },
+  {
+    labelKey: 'menu.areas',
+    icon: 'domain',
+    route: '/areas',
+    roles: ['ADMINISTRADOR'],
+    group: 'config',
+  },
+  {
+    labelKey: 'menu.equipo',
+    icon: 'group',
+    route: '/equipo',
+    roles: ['ADMINISTRADOR'],
+    group: 'config',
+  },
 ];

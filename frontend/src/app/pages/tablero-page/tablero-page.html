@@ -1,0 +1,234 @@
+<div class="page tablero">
+  <header class="head">
+    <div>
+      <h1 class="page-title">{{ 'tablero.title' | translate }}</h1>
+      <p class="page-lead">
+        @if (dia(); as d) {
+          @if (d.total) {
+            {{
+              'tablero.resumen'
+                | translate: { hechas: d.completadas, total: d.total - d.canceladas }
+            }}
+            @if (d.cumplimiento !== null) {
+              {{ 'tablero.cumplimiento' | translate: { pct: pct(d.cumplimiento) } }}
+            }
+          } @else {
+            {{ 'tablero.sinRondas' | translate }}
+          }
+        }
+      </p>
+    </div>
+    <div class="day-nav" role="group" [attr.aria-label]="'tablero.dia' | translate">
+      <button
+        mat-icon-button
+        type="button"
+        (click)="cambiarDia(-1)"
+        [attr.aria-label]="'tablero.anterior' | translate"
+      >
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+      <span class="day-nav__label">
+        @if (esHoy()) {
+          {{ 'tablero.hoy' | translate }}
+        } @else {
+          {{ fechaDate() | date: 'EEE d MMM' : '' : language.current() }}
+        }
+      </span>
+      <button
+        mat-icon-button
+        type="button"
+        [disabled]="esHoy()"
+        (click)="cambiarDia(1)"
+        [attr.aria-label]="'tablero.siguiente' | translate"
+      >
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <!-- La hoja de control -->
+    <section class="sheet panel" [attr.aria-label]="'tablero.hoja' | translate">
+      @if (cargado() && !grupos().length) {
+        <p class="sheet__empty">{{ 'tablero.sinRondas' | translate }}</p>
+      }
+      @if (grupos().length) {
+        <div class="sheet__scroll" #hoja>
+          <table class="grid">
+            <thead>
+              <tr>
+                <th scope="col" class="grid__corner">{{ 'tablero.rutina' | translate }}</th>
+                @for (h of columnas(); track h) {
+                  <th
+                    scope="col"
+                    class="grid__hour num"
+                    [class.grid__hour--now]="h === horaActual()"
+                  >
+                    {{ etiquetaHora(h) }}
+                  </th>
+                }
+              </tr>
+            </thead>
+            @for (grupo of grupos(); track grupo.area) {
+              <tbody>
+                <tr class="grid__area">
+                  <th scope="rowgroup" [attr.colspan]="columnas().length + 1">
+                    <span>{{ oracion(grupo.area) }}</span>
+                  </th>
+                </tr>
+                @for (fila of grupo.filas; track fila.idRutina) {
+                  <tr>
+                    <th scope="row" class="grid__name">{{ oracion(fila.rutina) }}</th>
+                    @for (h of columnas(); track h) {
+                      <td class="grid__cell" [class.grid__cell--now]="h === horaActual()">
+                        @for (ronda of fila.celdas.get(h) ?? []; track ronda.id) {
+                          <button
+                            type="button"
+                            class="mark"
+                            [attr.data-estado]="ronda.estado"
+                            [class.mark--alert]="ronda.incidenciasAbiertas > 0"
+                            [matTooltip]="describir(ronda)"
+                            [attr.aria-label]="describir(ronda)"
+                            (click)="irA(ronda)"
+                          >
+                            @switch (ronda.estado) {
+                              @case ('COMPLETADA') {
+                                <mat-icon aria-hidden="true">check</mat-icon>
+                              }
+                              @case ('VENCIDA') {
+                                <mat-icon aria-hidden="true">close</mat-icon>
+                              }
+                              @case ('EN_CURSO') {
+                                <span
+                                  class="mark__fill"
+                                  aria-hidden="true"
+                                  [style.height.%]="
+                                    (ronda.tareasCompletadas / ronda.tareasTotal) * 100
+                                  "
+                                ></span>
+                              }
+                            }
+                          </button>
+                        }
+                      </td>
+                    }
+                  </tr>
+                }
+              </tbody>
+            }
+          </table>
+        </div>
+        <ul class="legend">
+          <li>
+            <span class="mark mark--sample" data-estado="COMPLETADA"
+              ><mat-icon>check</mat-icon></span
+            >{{ 'estado.ronda.COMPLETADA' | translate }}
+          </li>
+          <li>
+            <span class="mark mark--sample" data-estado="EN_CURSO"
+              ><span class="mark__fill" style="height: 50%"></span></span
+            >{{ 'estado.ronda.EN_CURSO' | translate }}
+          </li>
+          <li>
+            <span class="mark mark--sample" data-estado="PROGRAMADA"></span
+            >{{ 'estado.ronda.PROGRAMADA' | translate }}
+          </li>
+          <li>
+            <span class="mark mark--sample" data-estado="VENCIDA"><mat-icon>close</mat-icon></span
+            >{{ 'estado.ronda.VENCIDA' | translate }}
+          </li>
+          <li>
+            <span class="mark mark--sample mark--alert" data-estado="PROGRAMADA"></span
+            >{{ 'tablero.conIncidencia' | translate }}
+          </li>
+        </ul>
+      }
+    </section>
+
+    <!-- Lo que hay que atender -->
+    <aside class="side">
+      <section class="side__block panel">
+        <div class="side__head">
+          <h2>{{ 'tablero.atender' | translate }}</h2>
+          <a class="side__link" routerLink="/incidencias">{{
+            'tablero.verIncidencias' | translate
+          }}</a>
+        </div>
+        @if (!abiertas().length && !vencidas().length) {
+          <p class="side__empty">{{ 'tablero.todoBien' | translate }}</p>
+        }
+        <ul class="alerts">
+          @for (incidencia of abiertas().slice(0, 5); track incidencia.id) {
+            <li>
+              <a class="alert" [routerLink]="['/rondas', incidencia.idEjecucion]">
+                <app-status-component tipo="incidencia" [estado]="incidencia.estado" />
+                <span class="alert__text">{{ incidencia.descripcion }}</span>
+                <span class="alert__meta">
+                  {{ oracion(incidencia.area) }}, {{ hace(incidencia.fechaReporte) }}
+                </span>
+              </a>
+            </li>
+          }
+          @for (ronda of vencidas().slice(0, 4); track ronda.id) {
+            <li>
+              <a class="alert" [routerLink]="['/rondas', ronda.id]">
+                <app-status-component [estado]="ronda.estado" />
+                <span class="alert__text">
+                  {{ oracion(ronda.rutina) }} {{ 'tablero.deLas' | translate }}
+                  {{ ronda.fechaProgramada.substring(11, 16) }}
+                </span>
+                <span class="alert__meta">{{ oracion(ronda.area) }}</span>
+              </a>
+            </li>
+          }
+        </ul>
+      </section>
+
+      @if (tablero(); as t) {
+        <section class="side__block panel">
+          <h2>{{ 'tablero.porArea' | translate }}</h2>
+          <ul class="bars">
+            @for (area of t.porArea; track area.nombre) {
+              <li class="bar">
+                <span class="bar__label">{{ oracion(area.nombre) }}</span>
+                <span class="bar__value num"
+                  >{{ area.completadas }}/{{ area.total - area.canceladas }}</span
+                >
+                <span class="bar__track" aria-hidden="true">
+                  <span class="bar__seg bar__seg--done" [style.flex-grow]="area.completadas"></span>
+                  <span class="bar__seg bar__seg--doing" [style.flex-grow]="area.enCurso"></span>
+                  <span class="bar__seg bar__seg--late" [style.flex-grow]="area.vencidas"></span>
+                  <span class="bar__seg" [style.flex-grow]="area.programadas"></span>
+                </span>
+              </li>
+            }
+          </ul>
+        </section>
+
+        <section class="side__block panel">
+          <h2>{{ 'tablero.tendencia' | translate }}</h2>
+          <p class="side__note">{{ 'tablero.tendenciaNota' | translate }}</p>
+          <ol class="trend">
+            @for (d of t.tendencia; track d.fecha) {
+              <li class="trend__day" [class.trend__day--current]="d.fecha === fecha()">
+                <span class="trend__value num">{{
+                  d.cumplimiento === null ? '-' : pct(d.cumplimiento) + '%'
+                }}</span>
+                <span class="trend__track" aria-hidden="true">
+                  <span
+                    class="trend__bar"
+                    [class.trend__bar--low]="d.cumplimiento !== null && d.cumplimiento < 80"
+                    [style.height.%]="d.cumplimiento ?? 0"
+                  ></span>
+                </span>
+                <span class="trend__label">{{
+                  d.fecha + 'T12:00:00' | date: 'EEEEE' : '' : language.current()
+                }}</span>
+              </li>
+            }
+          </ol>
+        </section>
+      }
+    </aside>
+  </div>
+</div>

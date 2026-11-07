@@ -1,5 +1,7 @@
 package mx.unam.buzz.rutinas.config;
 
+import mx.unam.buzz.rutinas.common.security.SesionContexto;
+import mx.unam.buzz.rutinas.common.security.UsuarioSesionVO;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
@@ -14,12 +16,12 @@ import java.util.Optional;
 @EnableJpaAuditing
 public class JpaAuditingConfig {
 
-    /** Usuario del sistema mientras no exista autenticacion. */
+    /** Usuario del sistema: lo que no hace una persona (programacion, vencimientos). */
     public static final Long USUARIO_SISTEMA = 0L;
 
     @Bean
     public AuditorAware<Long> auditorAware() {
-        // TODO: tomar el id del usuario autenticado cuando entre el modulo de seguridad
-        return () -> Optional.of(USUARIO_SISTEMA);
+        // Fuera de una peticion (tareas programadas, datos de demostracion) audita el sistema
+        return () -> Optional.of(SesionContexto.actual().map(UsuarioSesionVO::getId).orElse(USUARIO_SISTEMA));
     }
 }

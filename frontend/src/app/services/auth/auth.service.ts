@@ -1,35 +1,42 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { delay, Observable, of, tap } from 'rxjs';
+import { map, Observable, tap } from 'rxjs';
+import { Endpoints } from '../../../environments/endpoints';
 import { AppConfig } from '../../constants/app-config';
-import { LoginRequest, Rol, Session } from '../../models/auth/session.model';
+import { SingleResponse } from '../../models/api/api-response.model';
+import { AuthToken, LoginRequest, Rol, Session } from '../../models/auth/session.model';
+import { ConsumeService } from '../consume/consume.service';
 
 /**
- * Sesion SIMULADA. El backend aun no tiene Spring Security: cualquier correo con una
- * contrasena valida entra con el rol elegido. Cuando exista el endpoint de login solo
- * cambia `login()`; guards, interceptor y menu ya leen la sesion desde aqui.
+ * Sesion contra POST /auth/login. Guarda el token en sessionStorage (dura lo que la
+ * pestana) y el interceptor lo manda como Authorization: Bearer.
  */
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly router = inject(Router);
+  private readonly consume = inject(ConsumeService);
   private readonly current = signal<Session | null>(this.restore());
 
   readonly session = this.current.asReadonly();
-  readonly isAuthenticated = computed(() => this.current() !== null);
+  readonly usuario = computed(() => this.current()?.usuario ?? null);
+  readonly isAuthenticated = computed(() => {
+    const session = this.current();
+    return session !== null && new Date(session.expiraEn).getTime() > Date.now();
+  });
 
   login(request: LoginRequest): Observable<Session> {
-    const session: Session = {
-      nombre: this.nameFromEmail(request.correo),
-      correo: request.correo.trim().toLowerCase(),
-      rol: request.rol,
-    };
-    return of(session).pipe(
-      delay(300),
-      tap((value) => {
-        this.current.set(value);
-        this.persist(value);
-      }),
-    );
+    return this.consume
+      .httpPost<SingleResponse<AuthToken>>(Endpoints.login, {
+        correo: request.correo.trim().toLowerCase(),
+        contrasena: request.contrasena,
+      })
+      .pipe(
+        map((response) => response.data),
+        tap((session) => {
+          this.current.set(session);
+          this.persist(session);
+        }),
+      );
   }
 
   logout(): void {
@@ -39,23 +46,20 @@ export class AuthService {
   }
 
   hasRole(...roles: Rol[]): boolean {
-    const rol = this.current()?.rol;
-    return rol !== undefined && roles.includes(rol);
+    const perfil = this.current()?.usuario.perfil;
+    return perfil !== undefined && roles.includes(perfil);
   }
 
-  private nameFromEmail(correo: string): string {
-    const user = correo.split('@')[0] ?? '';
-    return user
-      .split(/[._-]/)
-      .filter(Boolean)
-      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-      .join(' ');
+  /** Pantalla de inicio de cada perfil: el operador va a su turno; los demas, al tablero. */
+  home(): string {
+    return this.hasRole('OPERADOR') ? '/turno' : '/tablero';
   }
 
   private restore(): Session | null {
     try {
       const raw = sessionStorage.getItem(AppConfig.storage.session);
-      return raw ? (JSON.parse(raw) as Session) : null;
+      const session = raw ? (JSON.parse(raw) as Session) : null;
+      return session?.token && session.usuario ? session : null;
     } catch {
       return null;
     }

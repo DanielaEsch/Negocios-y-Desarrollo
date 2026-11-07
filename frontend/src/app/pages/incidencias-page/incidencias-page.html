@@ -1,0 +1,105 @@
+<div class="page incidencias">
+  <header class="head">
+    <h1 class="page-title">{{ 'incidencias.title' | translate }}</h1>
+    <p class="page-lead">{{ 'incidencias.lead' | translate }}</p>
+  </header>
+
+  @if (areas().length > 1) {
+    <div class="filters" role="group" [attr.aria-label]="'incidencias.filtrar' | translate">
+      <button
+        type="button"
+        class="chip"
+        [class.chip--on]="area() === null"
+        [attr.aria-pressed]="area() === null"
+        (click)="filtrar(null)"
+      >
+        {{ 'incidencias.todas' | translate }}
+      </button>
+      @for (a of areas(); track a.id) {
+        <button
+          type="button"
+          class="chip"
+          [class.chip--on]="area() === a.id"
+          [attr.aria-pressed]="area() === a.id"
+          (click)="filtrar(a.id)"
+        >
+          {{ oracion(a.nombre) }}
+        </button>
+      }
+    </div>
+  }
+
+  <div class="board">
+    @for (columna of columnas(); track columna.estado) {
+      <section class="column" [attr.data-estado]="columna.estado">
+        <h2 class="column__title">
+          {{ 'incidencias.columna.' + columna.estado | translate }}
+          <span class="column__count num">{{ columna.total }}</span>
+        </h2>
+        @if (!columna.items.length) {
+          <p class="column__empty">{{ 'incidencias.vacia.' + columna.estado | translate }}</p>
+        }
+        @for (incidencia of columna.items; track incidencia.id) {
+          <article class="card">
+            <p class="card__meta">
+              {{ oracion(incidencia.area) }} &ndash;
+              <a [routerLink]="['/rondas', incidencia.idEjecucion]">{{
+                oracion(incidencia.rutina)
+              }}</a>
+            </p>
+            <p class="card__text">{{ incidencia.descripcion }}</p>
+            <p class="card__who">
+              @if (incidencia.estado === 'RESUELTA') {
+                {{
+                  'incidencias.resueltaPor'
+                    | translate
+                      : { name: incidencia.revisor ?? '', hace: hace(incidencia.fechaResolucion) }
+                }}
+              } @else if (incidencia.estado === 'REVISION') {
+                {{ 'incidencias.laAtiende' | translate: { name: incidencia.revisor ?? '' } }}
+              } @else {
+                {{
+                  'incidencias.reportadaPor'
+                    | translate
+                      : { name: incidencia.reporta ?? '', hace: hace(incidencia.fechaReporte) }
+                }}
+              }
+            </p>
+            @if (incidencia.comentarioResolucion) {
+              <p class="card__answer">{{ incidencia.comentarioResolucion }}</p>
+            }
+            @if (incidencia.estado === 'PENDIENTE') {
+              <button
+                mat-flat-button
+                type="button"
+                class="card__action"
+                [disabled]="ocupada() === incidencia.id"
+                (click)="atender(incidencia)"
+              >
+                {{ 'incidencias.atender' | translate }}
+              </button>
+            } @else if (incidencia.estado === 'REVISION') {
+              <button
+                mat-stroked-button
+                type="button"
+                class="card__action"
+                [disabled]="ocupada() === incidencia.id"
+                (click)="resolver(incidencia)"
+              >
+                <mat-icon>task_alt</mat-icon>
+                {{ 'incidencias.marcarResuelta' | translate }}
+              </button>
+            }
+          </article>
+        }
+        @if (columna.total > columna.items.length) {
+          <p class="column__more">
+            {{
+              'incidencias.masResueltas' | translate: { n: columna.total - columna.items.length }
+            }}
+          </p>
+        }
+      </section>
+    }
+  </div>
+</div>

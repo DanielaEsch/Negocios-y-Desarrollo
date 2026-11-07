@@ -42,3 +42,16 @@ management:
     web:
       exposure:
         include: health,info
+
+taskin:
+  seguridad:
+    # Llave HMAC del token de sesion (minimo 32 caracteres). En produccion va por variable de entorno.
+    secreto: ${TASKIN_JWT_SECRET:taskin-solo-para-desarrollo-local-no-usar-en-produccion}
+    duracion-horas: 12
+  programacion:
+    # Programa las rondas del dia y marca las vencidas
+    habilitada: true
+  demo:
+    # Simula el historial de rondas e incidencias de los ultimos dias para la demostracion
+    habilitada: ${TASKIN_DEMO:false}
+    dias-historial: 6
