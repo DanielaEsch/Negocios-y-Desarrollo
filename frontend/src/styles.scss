@@ -198,3 +198,26 @@ h3 {
     )
   );
 }
+
+// Impresion del recibo: solo el contenido, sin navegacion ni botones
+@media print {
+  .rail,
+  .topbar,
+  .tabbar,
+  .progress,
+  .no-print {
+    display: none !important;
+  }
+
+  .shell {
+    display: block !important;
+  }
+
+  body {
+    background: #fff;
+  }
+
+  .panel {
+    break-inside: avoid;
+  }
+}

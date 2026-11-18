@@ -13,6 +13,11 @@ spring:
       ddl-auto: none
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  servlet:
+    multipart:
+      # Evidencias: 5 MB por foto (lo vuelve a exigir el dominio)
+      max-file-size: 5MB
+      max-request-size: 6MB
   jackson:
     date-format: "yyyy-MM-dd'T'HH:mm:ss"
     serialization:
@@ -55,3 +60,36 @@ taskin:
     # Simula el historial de rondas e incidencias de los ultimos dias para la demostracion
     habilitada: ${TASKIN_DEMO:false}
     dias-historial: 6
+  evidencias:
+    # Carpeta de las fotos. En un contenedor, montar un volumen aqui.
+    directorio: ${TASKIN_EVIDENCIAS_DIR:${user.home}/.taskin/evidencias}
+  pagos:
+    dias-prueba: 14
+    pasarela:
+      # En produccion seria la URL del proveedor; aqui, el simulador montado en este mismo servidor
+      url: ${TASKIN_PASARELA_URL:http://localhost:${server.port}/api/v1/sandbox/pasarela}
+      llave-secreta: ${TASKIN_PASARELA_LLAVE_SECRETA:sk_test_taskin_sandbox}
+      secreto-webhook: ${TASKIN_PASARELA_SECRETO_WEBHOOK:whsec_taskin_sandbox}
+      # Una firma mas vieja que esto se rechaza (replay)
+      tolerancia-segundos: 300
+    emisor:
+      rfc: BUZ260917AB1
+      razon-social: TASKIN FOR SMALL BUSINESS
+      regimen-fiscal: "601"
+      codigo-postal: "04510"
+    transferencia:
+      banco: BANCO SANDBOX
+      clabe: "999180001234567899"
+      beneficiario: TASKIN FOR SMALL BUSINESS
+
+# Simulador de pasarela (modulo pasarela-sandbox). Apagado en produccion.
+pasarela:
+  sandbox:
+    habilitada: ${PASARELA_SANDBOX:true}
+    llave-publica: pk_test_taskin_sandbox
+    llave-secreta: ${TASKIN_PASARELA_LLAVE_SECRETA:sk_test_taskin_sandbox}
+    secreto-webhook: ${TASKIN_PASARELA_SECRETO_WEBHOOK:whsec_taskin_sandbox}
+    url-webhook: http://localhost:${server.port}/api/v1/pagos/webhook
+    retraso-ms: 1500
+    reintentos: 3
+    duplicar-webhook: false

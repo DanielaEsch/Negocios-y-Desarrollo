@@ -1,5 +1,8 @@
-/** Perfiles del sistema, los mismos del ADR y de la capa de dominio. */
-export type Rol = 'OPERADOR' | 'SUPERVISOR' | 'ADMINISTRADOR';
+/**
+ * Perfiles del sistema, los mismos del ADR y de la capa de dominio. COBRANZA es personal
+ * de TaskIn (no del negocio): concilia las transferencias B2B.
+ */
+export type Rol = 'OPERADOR' | 'SUPERVISOR' | 'ADMINISTRADOR' | 'COBRANZA';
 
 export interface AreaResumen {
   id: number;

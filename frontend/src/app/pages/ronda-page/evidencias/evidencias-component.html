@@ -1,0 +1,60 @@
+<section class="evidencias">
+  <h2 class="evidencias__title">
+    {{ 'evidencias.title' | translate }}
+    <span class="num">{{ fotos().length }}/{{ max }}</span>
+  </h2>
+
+  @if (fotos().length === 0 && !puedeSubir()) {
+    <p class="evidencias__vacio">{{ 'evidencias.ninguna' | translate }}</p>
+  }
+
+  @if (fotos().length) {
+    <ul class="galeria">
+      @for (foto of fotos(); track foto.evidencia.id) {
+        <li class="galeria__item">
+          @if (foto.url) {
+            <a [href]="foto.url" target="_blank" rel="noopener">
+              <img
+                [src]="foto.url"
+                [alt]="foto.evidencia.nota || ('evidencias.foto' | translate)"
+                loading="lazy"
+              />
+            </a>
+          } @else {
+            <span class="galeria__cargando" aria-hidden="true"></span>
+          }
+          <span class="galeria__pie">
+            <span class="num">{{
+              foto.evidencia.fechaCaptura | date: 'HH:mm' : '' : language.current()
+            }}</span>
+            @if (foto.evidencia.nota) {
+              · {{ foto.evidencia.nota }}
+            }
+          </span>
+        </li>
+      }
+    </ul>
+  }
+
+  @if (puedeSubir() && fotos().length < max) {
+    <div class="subir">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="subir__nota">
+        <mat-label>{{ 'evidencias.nota' | translate }}</mat-label>
+        <input matInput [formControl]="nota" maxlength="200" />
+      </mat-form-field>
+      <label class="subir__boton" [class.subir__boton--ocupado]="subiendo()">
+        <mat-icon aria-hidden="true">photo_camera</mat-icon>
+        {{ (subiendo() ? 'evidencias.subiendo' : 'evidencias.tomar') | translate }}
+        <input
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          capture="environment"
+          class="visually-hidden"
+          [disabled]="subiendo()"
+          (change)="elegir($event)"
+        />
+      </label>
+    </div>
+    <p class="form-note">{{ 'evidencias.limites' | translate }}</p>
+  }
+</section>

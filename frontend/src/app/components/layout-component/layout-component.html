@@ -82,6 +82,20 @@
   </header>
 
   <main class="main">
+    @if (aviso(); as s) {
+      <div class="aviso-suscripcion no-print" [attr.data-estado]="s.estado" role="status">
+        <mat-icon aria-hidden="true">{{
+          s.estado === 'VENCIDA' ? 'warning' : 'hourglass_bottom'
+        }}</mat-icon>
+        <span>
+          {{
+            (s.estado === 'VENCIDA' ? 'suscripcion.avisoVencida' : 'suscripcion.avisoPrueba')
+              | translate: { n: s.diasRestantes }
+          }}
+        </span>
+        <a routerLink="/suscripcion">{{ 'suscripcion.verPlanes' | translate }}</a>
+      </div>
+    }
     <router-outlet />
   </main>
 

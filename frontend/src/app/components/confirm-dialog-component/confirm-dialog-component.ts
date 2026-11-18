@@ -8,9 +8,11 @@ export interface ConfirmDialogData {
   messageKey: string;
   params?: Record<string, unknown>;
   confirmKey?: string;
+  /** false para confirmaciones positivas (validar un pago); por defecto es destructiva. */
+  peligro?: boolean;
 }
 
-/** Confirmacion de acciones destructivas. Se cierra con true si el usuario acepta. */
+/** Confirmacion de acciones (destructivas por defecto). Se cierra con true si el usuario acepta. */
 @Component({
   selector: 'app-confirm-dialog-component',
   imports: [MatDialogModule, MatButtonModule, TranslatePipe],
@@ -21,7 +23,12 @@ export interface ConfirmDialogData {
     </mat-dialog-content>
     <mat-dialog-actions align="end">
       <button mat-button [mat-dialog-close]="false">{{ 'actions.cancel' | translate }}</button>
-      <button mat-flat-button class="button-danger" [mat-dialog-close]="true" cdkFocusInitial>
+      <button
+        mat-flat-button
+        [class.button-danger]="data.peligro !== false"
+        [mat-dialog-close]="true"
+        cdkFocusInitial
+      >
         {{ data.confirmKey ?? 'actions.delete' | translate }}
       </button>
     </mat-dialog-actions>

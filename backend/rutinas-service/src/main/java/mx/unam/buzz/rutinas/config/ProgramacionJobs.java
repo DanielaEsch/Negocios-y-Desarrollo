@@ -3,6 +3,7 @@ package mx.unam.buzz.rutinas.config;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mx.unam.buzz.rutinas.facade.IProgramacionFacade;
+import mx.unam.buzz.rutinas.service.IPagoService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -24,6 +25,7 @@ import java.time.LocalDateTime;
 public class ProgramacionJobs {
 
     private final IProgramacionFacade programacionFacade;
+    private final IPagoService pagoService;
 
     @Value("${taskin.demo.habilitada:false}")
     private boolean demo;
@@ -49,5 +51,11 @@ public class ProgramacionJobs {
     @Scheduled(fixedDelayString = "PT5M", initialDelayString = "PT5M")
     public void marcarVencidas() {
         programacionFacade.marcarVencidas(LocalDateTime.now());
+    }
+
+    /** Ordenes de pago que nadie pago a tiempo (tarjeta 30 min, transferencia 72 h). */
+    @Scheduled(fixedDelayString = "PT1M", initialDelayString = "PT1M")
+    public void vencerOrdenesDePago() {
+        pagoService.vencerOrdenes(LocalDateTime.now());
     }
 }

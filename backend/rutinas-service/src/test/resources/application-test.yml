@@ -13,3 +13,10 @@ taskin:
     habilitada: false
   demo:
     habilitada: false
+  evidencias:
+    directorio: ${java.io.tmpdir}/taskin-pruebas/evidencias
+
+# El simulador queda montado, pero sin mandar webhooks: las pruebas los firman y envian a mano
+pasarela:
+  sandbox:
+    entregar-webhooks: false

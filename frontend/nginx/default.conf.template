@@ -8,6 +8,8 @@ server {
 
     # La API va al backend; el navegador solo ve un origen y no hay CORS.
     location /api/ {
+        # Fotos de evidencia: 5 MB por archivo mas el resto del multipart
+        client_max_body_size 6m;
         proxy_pass ${BACKEND_URL};
         proxy_set_header Host $host;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;

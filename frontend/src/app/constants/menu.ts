@@ -40,4 +40,12 @@ export const MENU_ITEMS: MenuItem[] = [
     roles: ['ADMINISTRADOR'],
     group: 'config',
   },
+  {
+    labelKey: 'menu.suscripcion',
+    icon: 'credit_card',
+    route: '/suscripcion',
+    roles: ['ADMINISTRADOR'],
+    group: 'config',
+  },
+  { labelKey: 'menu.cobranza', icon: 'account_balance', route: '/cobranza', roles: ['COBRANZA'] },
 ];

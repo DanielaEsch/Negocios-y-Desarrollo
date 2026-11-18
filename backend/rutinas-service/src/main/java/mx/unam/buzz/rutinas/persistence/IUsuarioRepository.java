@@ -26,7 +26,7 @@ public interface IUsuarioRepository extends JpaRepository<UsuarioDO, Long> {
      * solo salen los usuarios que comparten alguna de las areas indicadas.
      */
     @Query("SELECT u FROM UsuarioDO u"
-            + " WHERE u.activo = true"
+            + " WHERE u.activo = true AND u.perfil <> 'COBRANZA'"
             + " AND (:nombre = '' OR UPPER(u.nombre) LIKE CONCAT('%', :nombre, '%'))"
             + " AND (:perfil = '' OR u.perfil = :perfil)"
             + " AND (:todas = true OR EXISTS (SELECT 1 FROM UsuarioAreaDO ua"

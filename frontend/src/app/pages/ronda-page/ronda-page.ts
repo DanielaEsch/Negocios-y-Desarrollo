@@ -16,6 +16,7 @@ import { AuthService } from '../../services/auth/auth.service';
 import { NotificationService } from '../../services/notification/notification.service';
 import { RondaService } from '../../services/ronda/ronda.service';
 import { hora, oracion } from '../../utils/format.util';
+import { EvidenciasComponent } from './evidencias/evidencias-component';
 import { ReportarDialog, ReportarDialogData } from './reportar-dialog/reportar-dialog';
 
 /**
@@ -25,7 +26,14 @@ import { ReportarDialog, ReportarDialogData } from './reportar-dialog/reportar-d
  */
 @Component({
   selector: 'app-ronda-page',
-  imports: [RouterLink, MatButtonModule, MatIconModule, TranslatePipe, StatusComponent],
+  imports: [
+    RouterLink,
+    MatButtonModule,
+    MatIconModule,
+    TranslatePipe,
+    StatusComponent,
+    EvidenciasComponent,
+  ],
   templateUrl: './ronda-page.html',
   styleUrl: './ronda-page.scss',
 })
@@ -55,6 +63,11 @@ export class RondaPage implements OnInit {
   protected readonly puedeCancelar = computed(
     () => this.puedeEmpezar() && this.auth.hasRole('SUPERVISOR', 'ADMINISTRADOR'),
   );
+  /** Solo quien tomo la ronda sube fotos, mientras esta en curso o recien terminada. */
+  protected readonly puedeSubirFotos = computed(() => {
+    const estado = this.ronda()?.estado;
+    return this.esMia() && (estado === 'EN_CURSO' || estado === 'COMPLETADA');
+  });
   protected readonly hechas = computed(
     () => this.ronda()?.tareas.filter((tarea) => tarea.estado === 'COMPLETADA').length ?? 0,
   );

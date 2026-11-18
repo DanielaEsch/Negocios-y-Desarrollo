@@ -1,0 +1,321 @@
+<div class="page pago">
+  <a class="volver" routerLink="/suscripcion">
+    <mat-icon aria-hidden="true">arrow_back</mat-icon>{{ 'pago.volver' | translate }}
+  </a>
+  <header class="head">
+    <h1 class="page-title">{{ 'pago.title' | translate }}</h1>
+    <p class="page-lead">{{ 'pago.lead' | translate }}</p>
+  </header>
+
+  <div class="checkout">
+    <div class="checkout__form">
+      <!-- 1. Plan y periodo -->
+      <section class="panel bloque">
+        <h2 class="bloque__title">
+          <span class="paso">1</span>{{ 'pago.queCompras' | translate }}
+        </h2>
+        <div class="opciones" role="radiogroup" [attr.aria-label]="'pago.plan' | translate">
+          @for (p of planes(); track p.id) {
+            <button
+              type="button"
+              role="radio"
+              class="opcion"
+              [class.opcion--on]="plan() === p.clave"
+              [attr.aria-checked]="plan() === p.clave"
+              (click)="elegirPlan(p.clave)"
+            >
+              <strong>{{ p.nombre }}</strong>
+              <span class="num"
+                >{{ pesos(p.precioMensual) }} {{ 'suscripcion.porMes' | translate }}</span
+              >
+            </button>
+          }
+        </div>
+        <div
+          class="filters periodo"
+          role="radiogroup"
+          [attr.aria-label]="'pago.periodo' | translate"
+        >
+          <button
+            type="button"
+            role="radio"
+            class="chip"
+            [class.chip--on]="periodo() === 'MENSUAL'"
+            [attr.aria-checked]="periodo() === 'MENSUAL'"
+            (click)="elegirPeriodo('MENSUAL')"
+          >
+            {{ 'pago.mensual' | translate }}
+          </button>
+          <button
+            type="button"
+            role="radio"
+            class="chip"
+            [class.chip--on]="periodo() === 'ANUAL'"
+            [attr.aria-checked]="periodo() === 'ANUAL'"
+            (click)="elegirPeriodo('ANUAL')"
+          >
+            {{ 'pago.anual' | translate }} · {{ 'pago.dosMeses' | translate }}
+          </button>
+        </div>
+      </section>
+
+      <!-- 2. Datos fiscales para el CFDI -->
+      <section class="panel bloque" [formGroup]="fiscales">
+        <h2 class="bloque__title">
+          <span class="paso">2</span>{{ 'pago.facturacion' | translate }}
+        </h2>
+        <div class="campos">
+          <mat-form-field appearance="outline">
+            <mat-label>RFC</mat-label>
+            <input
+              matInput
+              formControlName="rfc"
+              maxlength="13"
+              autocomplete="off"
+              (input)="rfcEnMayusculas()"
+            />
+            @if (fiscales.controls.rfc.invalid) {
+              <mat-error>{{ 'pago.errores.rfc' | translate }}</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="campo--ancho">
+            <mat-label>{{ 'pago.razonSocial' | translate }}</mat-label>
+            <input
+              matInput
+              formControlName="razonSocial"
+              maxlength="300"
+              autocomplete="organization"
+            />
+            @if (fiscales.controls.razonSocial.invalid) {
+              <mat-error>{{ 'pago.errores.razonSocial' | translate }}</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'pago.codigoPostal' | translate }}</mat-label>
+            <input
+              matInput
+              formControlName="codigoPostal"
+              maxlength="5"
+              inputmode="numeric"
+              autocomplete="postal-code"
+            />
+            @if (fiscales.controls.codigoPostal.invalid) {
+              <mat-error>{{ 'pago.errores.codigoPostal' | translate }}</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'pago.regimen' | translate }}</mat-label>
+            <mat-select formControlName="regimenFiscal">
+              @for (r of regimenes; track r.clave) {
+                <mat-option [value]="r.clave">{{ r.clave }} · {{ r.nombre }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'pago.usoCfdi' | translate }}</mat-label>
+            <mat-select formControlName="usoCfdi">
+              @for (u of usos; track u.clave) {
+                <mat-option [value]="u.clave">{{ u.clave }} · {{ u.nombre }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </section>
+
+      <!-- 3. Metodo de pago -->
+      <section class="panel bloque">
+        <h2 class="bloque__title"><span class="paso">3</span>{{ 'pago.comoPagas' | translate }}</h2>
+        <div class="metodos" role="tablist">
+          <button
+            type="button"
+            role="tab"
+            class="metodo"
+            [class.metodo--on]="metodo() === 'TARJETA'"
+            [attr.aria-selected]="metodo() === 'TARJETA'"
+            (click)="metodo.set('TARJETA')"
+          >
+            <mat-icon aria-hidden="true">credit_card</mat-icon>
+            <span>
+              <strong>{{ 'pago.metodo.TARJETA' | translate }}</strong>
+              <small>{{ 'pago.tarjetaNota' | translate }}</small>
+            </span>
+          </button>
+          <button
+            type="button"
+            role="tab"
+            class="metodo"
+            [class.metodo--on]="metodo() === 'TRANSFERENCIA'"
+            [attr.aria-selected]="metodo() === 'TRANSFERENCIA'"
+            (click)="metodo.set('TRANSFERENCIA')"
+          >
+            <mat-icon aria-hidden="true">account_balance</mat-icon>
+            <span>
+              <strong>{{ 'pago.metodo.TRANSFERENCIA' | translate }}</strong>
+              <small>{{ 'pago.transferenciaNota' | translate }}</small>
+            </span>
+          </button>
+        </div>
+
+        @if (metodo() === 'TARJETA') {
+          <!-- Este bloque imita el formulario embebido de una pasarela: sus datos no tocan TaskIn -->
+          <div class="pasarela" [formGroup]="tarjeta">
+            <div class="pasarela__head">
+              <mat-icon aria-hidden="true">lock</mat-icon>
+              <span>{{ 'pago.pasarelaSegura' | translate }}</span>
+              <span class="pasarela__sandbox">SANDBOX</span>
+            </div>
+            <mat-form-field appearance="outline" class="campo--ancho">
+              <mat-label>{{ 'pago.tarjeta.numero' | translate }}</mat-label>
+              <input
+                matInput
+                formControlName="numero"
+                inputmode="numeric"
+                autocomplete="cc-number"
+                maxlength="23"
+                placeholder="4242 4242 4242 4242"
+                (input)="alEscribirNumero()"
+              />
+              @if (marcaTarjeta(); as m) {
+                <span matSuffix class="marca">{{ m }}</span>
+              }
+            </mat-form-field>
+            <div class="campos campos--tarjeta">
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'pago.tarjeta.expiracion' | translate }}</mat-label>
+                <input
+                  matInput
+                  formControlName="expiracion"
+                  inputmode="numeric"
+                  autocomplete="cc-exp"
+                  maxlength="5"
+                  placeholder="MM/AA"
+                  (input)="alEscribirExpiracion()"
+                />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>CVC</mat-label>
+                <input
+                  matInput
+                  formControlName="cvc"
+                  inputmode="numeric"
+                  autocomplete="cc-csc"
+                  maxlength="4"
+                />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="campo--ancho">
+                <mat-label>{{ 'pago.tarjeta.titular' | translate }}</mat-label>
+                <input matInput formControlName="titular" autocomplete="cc-name" maxlength="80" />
+              </mat-form-field>
+            </div>
+            @if (errorTarjeta(); as error) {
+              <p class="form-error" role="alert">{{ error }}</p>
+            }
+            <div class="prueba">
+              <p>{{ 'pago.prueba.titulo' | translate }}</p>
+              <ul>
+                @for (t of tarjetasPrueba; track t.numero) {
+                  <li>
+                    <button type="button" class="prueba__tarjeta" (click)="usarTarjeta(t.numero)">
+                      <span class="num">{{ t.numero }}</span>
+                      <span>{{ t.resultadoKey | translate }}</span>
+                    </button>
+                  </li>
+                }
+              </ul>
+            </div>
+          </div>
+        } @else {
+          <div class="transferencia">
+            <p>{{ 'pago.transferenciaExplica' | translate }}</p>
+            <ol>
+              <li>{{ 'pago.transferenciaPaso1' | translate }}</li>
+              <li>{{ 'pago.transferenciaPaso2' | translate }}</li>
+              <li>{{ 'pago.transferenciaPaso3' | translate }}</li>
+            </ol>
+          </div>
+        }
+      </section>
+    </div>
+
+    <!-- Resumen calculado por el servidor -->
+    <aside class="panel resumen" aria-live="polite">
+      <h2>{{ 'pago.resumen' | translate }}</h2>
+      @if (cotizacion(); as c) {
+        <p class="resumen__plan">
+          {{ c.plan.nombre }} ·
+          {{ 'pago.' + (c.periodo === 'ANUAL' ? 'anual' : 'mensual') | translate }}
+        </p>
+        <dl class="cuenta">
+          <div>
+            <dt>
+              {{ 'pago.subtotal' | translate }}
+              <small class="num"
+                >({{ c.desglose.meses }} × {{ pesos(c.desglose.precioMensual) }})</small
+              >
+            </dt>
+            <dd class="num">{{ pesos(c.desglose.subtotal) }}</dd>
+          </div>
+          @for (d of c.desglose.descuentos; track d.concepto) {
+            <div class="cuenta__descuento">
+              <dt>{{ d.concepto }}</dt>
+              <dd class="num">-{{ pesos(d.monto) }}</dd>
+            </div>
+          }
+          <div>
+            <dt>{{ 'pago.iva' | translate }}</dt>
+            <dd class="num">{{ pesos(c.desglose.iva) }}</dd>
+          </div>
+          <div class="cuenta__total">
+            <dt>{{ 'pago.total' | translate }}</dt>
+            <dd class="num">{{ pesos(c.desglose.total) }} <small>MXN</small></dd>
+          </div>
+        </dl>
+      }
+
+      <div class="cupon">
+        @if (cupon(); as codigo) {
+          <p class="cupon__aplicado">
+            <mat-icon aria-hidden="true">sell</mat-icon>
+            <span>{{ codigo }}</span>
+            <button mat-button type="button" (click)="quitarCupon()">
+              {{ 'pago.quitar' | translate }}
+            </button>
+          </p>
+        } @else {
+          <mat-form-field appearance="outline" subscriptSizing="dynamic" class="cupon__campo">
+            <mat-label>{{ 'pago.cupon' | translate }}</mat-label>
+            <input
+              matInput
+              [formControl]="cuponInput"
+              maxlength="20"
+              (keydown.enter)="aplicarCupon()"
+            />
+          </mat-form-field>
+          <button mat-stroked-button type="button" (click)="aplicarCupon()">
+            {{ 'pago.aplicar' | translate }}
+          </button>
+        }
+      </div>
+      @if (errorCupon(); as e) {
+        <p class="form-error">{{ e }}</p>
+      }
+
+      <button
+        mat-flat-button
+        type="button"
+        class="button-xl pagar"
+        [disabled]="enviando() || !cotizacion()"
+        (click)="pagar()"
+      >
+        @if (paso(); as p) {
+          {{ 'pago.pasos.' + p | translate }}
+        } @else if (metodo() === 'TARJETA') {
+          {{ 'pago.pagar' | translate: { total: pesos(cotizacion()?.desglose?.total) } }}
+        } @else {
+          {{ 'pago.generarOrden' | translate }}
+        }
+      </button>
+      <p class="form-note">{{ 'pago.precioServidor' | translate }}</p>
+    </aside>
+  </div>
+</div>

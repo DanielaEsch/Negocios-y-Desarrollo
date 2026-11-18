@@ -222,3 +222,37 @@
     }
   }
 }
+
+// Aviso de prueba o suscripcion vencida (solo administrador)
+.aviso-suscripcion {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 32px;
+  background: var(--tk-doing-wash);
+  color: var(--tk-ink);
+  font-size: 0.92rem;
+
+  mat-icon {
+    color: var(--tk-doing);
+  }
+
+  a {
+    margin-left: auto;
+    color: var(--tk-action);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  &[data-estado='VENCIDA'] {
+    background: var(--tk-late-wash);
+
+    mat-icon {
+      color: var(--tk-late);
+    }
+  }
+
+  @media (max-width: 720px) {
+    padding: 10px 16px;
+  }
+}

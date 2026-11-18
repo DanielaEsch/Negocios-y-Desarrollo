@@ -16,3 +16,8 @@ logging:
 taskin:
   demo:
     habilitada: ${TASKIN_DEMO:true}
+
+# En local la pasarela reenvia cada webhook una vez, para ver en el log la idempotencia
+pasarela:
+  sandbox:
+    duplicar-webhook: true

@@ -1,0 +1,127 @@
+<div class="page suscripcion">
+  <header class="head">
+    <h1 class="page-title">{{ 'suscripcion.title' | translate }}</h1>
+    <p class="page-lead">{{ 'suscripcion.lead' | translate }}</p>
+  </header>
+
+  @if (suscripcion(); as s) {
+    <section class="panel estado" [attr.data-estado]="s.estado">
+      <div class="estado__main">
+        <span class="estado__label">{{ 'suscripcion.planActual' | translate }}</span>
+        <strong class="estado__plan">{{ s.plan.nombre }}</strong>
+        <app-estado-pago [estado]="s.estado" />
+      </div>
+      <dl class="estado__datos">
+        <div>
+          <dt>{{ 'suscripcion.vigencia' | translate }}</dt>
+          <dd class="num">{{ s.vigenciaFin | date: 'd MMM y' : '' : language.current() }}</dd>
+        </div>
+        <div>
+          <dt>{{ 'suscripcion.diasRestantes' | translate }}</dt>
+          <dd class="num">{{ s.diasRestantes }}</dd>
+        </div>
+      </dl>
+      <p class="estado__nota">
+        @switch (s.estado) {
+          @case ('PRUEBA') {
+            {{ 'suscripcion.notaPrueba' | translate: { n: s.diasRestantes } }}
+          }
+          @case ('VENCIDA') {
+            {{ 'suscripcion.notaVencida' | translate }}
+          }
+          @default {
+            {{ 'suscripcion.notaActiva' | translate }}
+          }
+        }
+      </p>
+    </section>
+  }
+
+  <section class="planes" [attr.aria-label]="'suscripcion.planes' | translate">
+    <div class="planes__head">
+      <h2>{{ 'suscripcion.planes' | translate }}</h2>
+      <div class="periodo" role="group" [attr.aria-label]="'pago.periodo' | translate">
+        <button
+          type="button"
+          class="chip"
+          [class.chip--on]="periodo() === 'MENSUAL'"
+          [attr.aria-pressed]="periodo() === 'MENSUAL'"
+          (click)="periodo.set('MENSUAL')"
+        >
+          {{ 'pago.mensual' | translate }}
+        </button>
+        <button
+          type="button"
+          class="chip"
+          [class.chip--on]="periodo() === 'ANUAL'"
+          [attr.aria-pressed]="periodo() === 'ANUAL'"
+          (click)="periodo.set('ANUAL')"
+        >
+          {{ 'pago.anual' | translate }}
+          <span class="ahorro">{{ 'pago.dosMeses' | translate }}</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="planes__grid">
+      @for (plan of planes(); track plan.id) {
+        <article class="plan" [class.plan--actual]="plan.actual">
+          @if (plan.actual) {
+            <span class="plan__tag">{{ 'suscripcion.tuPlan' | translate }}</span>
+          }
+          <h3>{{ plan.nombre }}</h3>
+          <p class="plan__precio">
+            <strong class="num">{{ pesos(precioPorMes(plan)) }}</strong>
+            <span>{{ 'suscripcion.porMes' | translate }}</span>
+          </p>
+          @if (periodo() === 'ANUAL') {
+            <p class="plan__anual num">
+              {{ 'suscripcion.cobroAnual' | translate: { total: pesos(plan.precioAnual) } }}
+            </p>
+          }
+          <p class="plan__desc">{{ plan.descripcion }}</p>
+          <a
+            mat-flat-button
+            class="plan__cta"
+            routerLink="/suscripcion/pagar"
+            [queryParams]="{ plan: plan.clave, periodo: periodo() }"
+          >
+            {{ (plan.actual ? 'suscripcion.renovar' : 'suscripcion.elegir') | translate }}
+          </a>
+        </article>
+      }
+    </div>
+    <p class="form-note">{{ 'suscripcion.ivaAparte' | translate }}</p>
+  </section>
+
+  <section class="panel historial">
+    <h2>{{ 'suscripcion.historial' | translate }}</h2>
+    @if (ordenes().length === 0) {
+      <p class="vacio">{{ 'suscripcion.sinPagos' | translate }}</p>
+    } @else {
+      <ul class="historial__lista">
+        @for (orden of ordenes(); track orden.id) {
+          <li>
+            <a class="fila" [routerLink]="['/suscripcion/ordenes', orden.id]">
+              <span class="fila__folio num">{{ orden.folio }}</span>
+              <span class="fila__plan">
+                {{ orden.plan?.nombre }} · {{ 'pago.' + (orden.periodo | lowercase) | translate }}
+              </span>
+              <span class="fila__metodo">
+                <mat-icon aria-hidden="true">{{
+                  orden.metodo === 'TARJETA' ? 'credit_card' : 'account_balance'
+                }}</mat-icon>
+                {{ 'pago.metodo.' + orden.metodo | translate }}
+              </span>
+              <span class="fila__fecha num">{{
+                orden.fechaOrden | date: 'd MMM y, HH:mm' : '' : language.current()
+              }}</span>
+              <span class="fila__total num">{{ pesos(orden.desglose.total) }}</span>
+              <app-estado-pago [estado]="orden.estado" />
+            </a>
+          </li>
+        }
+      </ul>
+    }
+  </section>
+</div>

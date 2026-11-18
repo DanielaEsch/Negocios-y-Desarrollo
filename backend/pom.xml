@@ -20,6 +20,7 @@
     <modules>
         <module>rutinas-dominio</module>
         <module>rutinas-modelo</module>
+        <module>pasarela-sandbox</module>
         <module>rutinas-service</module>
     </modules>
 
@@ -41,6 +42,11 @@
             <dependency>
                 <groupId>mx.unam.buzz</groupId>
                 <artifactId>rutinas-modelo</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mx.unam.buzz</groupId>
+                <artifactId>pasarela-sandbox</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

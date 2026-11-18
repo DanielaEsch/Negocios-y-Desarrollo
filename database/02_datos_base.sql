@@ -17,7 +17,10 @@ VALUES ('Laura Mendez', 'laura@taskin.mx', '$2a$12$nO8nnQzKAGZ7kCUKyNKyUuTuMiI6C
        ('Ana Torres', 'ana@taskin.mx', '$2a$12$nO8nnQzKAGZ7kCUKyNKyUuTuMiI6CBL1iIvf7t7QiIDHx7RuqPRcG',
         'OPERADOR', TRUE, CURRENT_TIMESTAMP, 0),
        ('Luis Perez', 'luis@taskin.mx', '$2a$12$nO8nnQzKAGZ7kCUKyNKyUuTuMiI6CBL1iIvf7t7QiIDHx7RuqPRcG',
-        'OPERADOR', TRUE, CURRENT_TIMESTAMP, 0)
+        'OPERADOR', TRUE, CURRENT_TIMESTAMP, 0),
+       -- Personal de TaskIn (no del negocio): concilia las transferencias B2B
+       ('Sofia Vargas', 'cobranza@taskin.mx', '$2a$12$nO8nnQzKAGZ7kCUKyNKyUuTuMiI6CBL1iIvf7t7QiIDHx7RuqPRcG',
+        'COBRANZA', TRUE, CURRENT_TIMESTAMP, 0)
 ON CONFLICT DO NOTHING;
 
 -- Jorge supervisa las tres areas; Ana cubre mantenimiento y recepcion; Luis, cocina.
@@ -71,3 +74,20 @@ FROM (VALUES
 ) AS t (rutina, nombre, orden)
 JOIN RUTINA ru ON ru.TX_NOMBRE = t.rutina AND ru.DN_ACTIVO
 WHERE NOT EXISTS (SELECT 1 FROM TAREA x WHERE x.FK_RUTINA = ru.PK_ID AND x.TX_NOMBRE = t.nombre);
+
+-- Planes de TaskIn (MXN al mes, mas IVA). Anclados a lo que respondieron los
+-- negocios en el formulario de validacion: la mayoria pagaria entre $500 y $5,000.
+INSERT INTO PLAN_SUSCRIPCION (TX_CLAVE, TX_NOMBRE, TX_DESCRIPCION, DN_PRECIO_MENSUAL, DN_ORDEN, DN_USUARIO_CREADOR)
+VALUES ('BASICO', 'Basico', 'Un local: rutinas, rondas e incidencias', 599.00, 1, 0),
+       ('NEGOCIO', 'Negocio', 'Todo lo basico mas evidencias con foto y tablero del supervisor', 1490.00, 2, 0),
+       ('PRO', 'Pro', 'Varias sucursales, factura automatica y soporte prioritario', 2990.00, 3, 0)
+ON CONFLICT DO NOTHING;
+
+-- El negocio arranca con 14 dias de prueba del plan Negocio.
+INSERT INTO SUSCRIPCION (FK_PLAN, TX_ESTADO, DD_FECHA_INICIO, DD_VIGENCIA_FIN, TX_RFC, TX_RAZON_SOCIAL,
+                         TX_CODIGO_POSTAL, TX_REGIMEN_FISCAL, TX_USO_CFDI, DN_USUARIO_CREADOR)
+SELECT p.PK_ID, 'PRUEBA', CURRENT_DATE, CURRENT_DATE + 14, 'CLE210514AB1', 'CAFETERIA LA ESQUINA SA DE CV',
+       '04510', '601', 'G03', 0
+FROM PLAN_SUSCRIPCION p
+WHERE p.TX_CLAVE = 'NEGOCIO'
+  AND NOT EXISTS (SELECT 1 FROM SUSCRIPCION);

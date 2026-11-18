@@ -68,6 +68,32 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/equipo-page/equipo-page').then((m) => m.EquipoPage),
       },
       {
+        path: 'suscripcion',
+        title: 'Suscripcion | TaskIn',
+        canActivate: [roleGuard('ADMINISTRADOR')],
+        loadComponent: () =>
+          import('./pages/suscripcion-page/suscripcion-page').then((m) => m.SuscripcionPage),
+      },
+      {
+        path: 'suscripcion/pagar',
+        title: 'Pagar | TaskIn',
+        canActivate: [roleGuard('ADMINISTRADOR')],
+        loadComponent: () => import('./pages/pago-page/pago-page').then((m) => m.PagoPage),
+      },
+      {
+        path: 'suscripcion/ordenes/:id',
+        title: 'Orden de pago | TaskIn',
+        canActivate: [roleGuard('ADMINISTRADOR', 'COBRANZA')],
+        loadComponent: () => import('./pages/orden-page/orden-page').then((m) => m.OrdenPage),
+      },
+      {
+        path: 'cobranza',
+        title: 'Cobranza | TaskIn',
+        canActivate: [roleGuard('COBRANZA')],
+        loadComponent: () =>
+          import('./pages/cobranza-page/cobranza-page').then((m) => m.CobranzaPage),
+      },
+      {
         path: '**',
         loadComponent: () =>
           import('./pages/not-found-page/not-found-page').then((m) => m.NotFoundPage),

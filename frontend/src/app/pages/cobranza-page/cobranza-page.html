@@ -1,0 +1,112 @@
+<div class="page cobranza">
+  <header class="head">
+    <h1 class="page-title">{{ 'cobranza.title' | translate }}</h1>
+    <p class="page-lead">{{ 'cobranza.lead' | translate }}</p>
+  </header>
+
+  <section class="bloque">
+    <h2 class="bloque__title">
+      {{ 'cobranza.porValidar' | translate }}
+      <span class="contador num">{{ porValidar().length }}</span>
+    </h2>
+    @if (porValidar().length === 0) {
+      <p class="vacio">{{ 'cobranza.nadaPorValidar' | translate }}</p>
+    }
+    <div class="tarjetas">
+      @for (o of porValidar(); track o.id) {
+        <article class="panel deposito">
+          <header class="deposito__head">
+            <span class="num deposito__folio">{{ o.folio }}</span>
+            <strong class="num deposito__total">{{ pesos(o.desglose.total) }}</strong>
+          </header>
+          <p class="deposito__cliente">{{ o.datosFiscales.razonSocial }}</p>
+          <dl class="deposito__datos">
+            <div>
+              <dt>RFC</dt>
+              <dd class="num">{{ o.datosFiscales.rfc }}</dd>
+            </div>
+            <div>
+              <dt>{{ 'orden.claveRastreo' | translate }}</dt>
+              <dd class="num">{{ o.referenciaPago }}</dd>
+            </div>
+            <div>
+              <dt>{{ 'cobranza.concepto' | translate }}</dt>
+              <dd>
+                {{ o.plan?.nombre }} ·
+                {{ 'pago.' + (o.periodo === 'ANUAL' ? 'anual' : 'mensual') | translate }}
+              </dd>
+            </div>
+            <div>
+              <dt>{{ 'orden.fecha' | translate }}</dt>
+              <dd class="num">
+                {{ o.fechaOrden | date: 'd MMM, HH:mm' : '' : language.current() }}
+              </dd>
+            </div>
+          </dl>
+          <div class="deposito__acciones">
+            <button
+              mat-button
+              type="button"
+              class="button-danger-icon"
+              [disabled]="ocupada() === o.id"
+              (click)="rechazar(o)"
+            >
+              {{ 'cobranza.rechazar' | translate }}
+            </button>
+            <button
+              mat-flat-button
+              type="button"
+              [disabled]="ocupada() === o.id"
+              (click)="validar(o)"
+            >
+              <mat-icon>verified</mat-icon>{{ 'cobranza.validar' | translate }}
+            </button>
+          </div>
+        </article>
+      }
+    </div>
+  </section>
+
+  <div class="dos">
+    <section class="panel lista">
+      <h2>{{ 'cobranza.esperandoDeposito' | translate }}</h2>
+      @if (esperando().length === 0) {
+        <p class="vacio">{{ 'cobranza.ninguna' | translate }}</p>
+      }
+      <ul>
+        @for (o of esperando(); track o.id) {
+          <li>
+            <a [routerLink]="['/suscripcion/ordenes', o.id]">
+              <span class="num">{{ o.folio }}</span>
+              <span class="lista__cliente">{{ o.datosFiscales.razonSocial }}</span>
+              <span class="num">{{ pesos(o.desglose.total) }}</span>
+              <span class="lista__vence num"
+                >{{ 'cobranza.vence' | translate }}
+                {{ o.fechaExpiracion | date: 'd MMM, HH:mm' : '' : language.current() }}</span
+              >
+            </a>
+          </li>
+        }
+      </ul>
+    </section>
+
+    <section class="panel lista">
+      <h2>{{ 'cobranza.resueltas' | translate }}</h2>
+      @if (resueltas().length === 0) {
+        <p class="vacio">{{ 'cobranza.ninguna' | translate }}</p>
+      }
+      <ul>
+        @for (o of resueltas(); track o.id) {
+          <li>
+            <a [routerLink]="['/suscripcion/ordenes', o.id]">
+              <span class="num">{{ o.folio }}</span>
+              <span class="lista__cliente">{{ o.datosFiscales.razonSocial }}</span>
+              <span class="num">{{ pesos(o.desglose.total) }}</span>
+              <app-estado-pago [estado]="o.estado" />
+            </a>
+          </li>
+        }
+      </ul>
+    </section>
+  </div>
+</div>

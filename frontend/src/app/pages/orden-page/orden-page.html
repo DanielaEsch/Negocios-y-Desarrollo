@@ -1,0 +1,279 @@
+<div class="page orden">
+  <a class="volver no-print" [routerLink]="esAdmin() ? '/suscripcion' : '/cobranza'">
+    <mat-icon aria-hidden="true">arrow_back</mat-icon>{{ 'pago.volver' | translate }}
+  </a>
+
+  @if (orden(); as o) {
+    <header class="head orden__head">
+      <div>
+        <p class="orden__folio num">{{ o.folio }}</p>
+        <h1 class="page-title">
+          {{
+            (o.metodo === 'TRANSFERENCIA' && o.estado === 'PENDIENTE_PAGO'
+              ? 'orden.ordenDeCompra'
+              : 'orden.recibo'
+            ) | translate
+          }}
+        </h1>
+      </div>
+      <app-estado-pago [estado]="o.estado" />
+    </header>
+
+    <!-- Maquina de estados de la orden -->
+    <ol class="pasos" [attr.aria-label]="'orden.progreso' | translate">
+      @for (p of pasos(); track p.clave) {
+        <li
+          class="pasos__item"
+          [class.pasos__item--hecho]="p.hecho"
+          [class.pasos__item--actual]="p.actual"
+          [class.pasos__item--falla]="p.falla"
+        >
+          <span class="pasos__punto" aria-hidden="true">
+            @if (p.falla) {
+              <mat-icon>close</mat-icon>
+            } @else if (p.hecho) {
+              <mat-icon>check</mat-icon>
+            }
+          </span>
+          <span>{{ 'pagos.estado.' + p.clave | translate }}</span>
+        </li>
+      }
+    </ol>
+
+    @if (o.estado === 'PROCESANDO') {
+      <p class="aviso aviso--espera" role="status">
+        <mat-icon aria-hidden="true">hourglass_top</mat-icon>
+        {{
+          (o.metodo === 'TARJETA' ? 'orden.esperandoPasarela' : 'orden.esperandoCobranza')
+            | translate
+        }}
+      </p>
+    }
+    @if (o.estado === 'RECHAZADO') {
+      <div class="aviso aviso--mal" role="alert">
+        <mat-icon aria-hidden="true">error</mat-icon>
+        <div>
+          <strong>{{ 'orden.rechazada' | translate }}</strong>
+          <p>{{ o.motivoRechazo }}</p>
+        </div>
+        @if (esAdmin()) {
+          <a
+            mat-flat-button
+            routerLink="/suscripcion/pagar"
+            [queryParams]="{ plan: o.plan?.clave, periodo: o.periodo }"
+          >
+            {{ 'orden.reintentar' | translate }}
+          </a>
+        }
+      </div>
+    }
+    @if (o.estado === 'VENCIDO') {
+      <p class="aviso aviso--mal">
+        <mat-icon aria-hidden="true">schedule</mat-icon>{{ 'orden.vencida' | translate }}
+      </p>
+    }
+
+    <!-- Orden de compra B2B: datos para el SPEI -->
+    @if (o.transferencia && o.estado === 'PENDIENTE_PAGO') {
+      <section class="panel spei">
+        <h2>{{ 'orden.datosDeposito' | translate }}</h2>
+        <dl class="spei__datos">
+          <div>
+            <dt>{{ 'orden.banco' | translate }}</dt>
+            <dd>{{ o.transferencia.banco }}</dd>
+          </div>
+          <div>
+            <dt>CLABE</dt>
+            <dd class="num copiable">
+              {{ o.transferencia.clabe }}
+              <button
+                mat-icon-button
+                type="button"
+                class="no-print"
+                [attr.aria-label]="'orden.copiar' | translate"
+                (click)="copiar(o.transferencia.clabe)"
+              >
+                <mat-icon>content_copy</mat-icon>
+              </button>
+            </dd>
+          </div>
+          <div>
+            <dt>{{ 'orden.beneficiario' | translate }}</dt>
+            <dd>{{ o.transferencia.beneficiario }}</dd>
+          </div>
+          <div>
+            <dt>{{ 'orden.referencia' | translate }}</dt>
+            <dd class="num copiable">
+              {{ o.transferencia.referencia }}
+              <button
+                mat-icon-button
+                type="button"
+                class="no-print"
+                [attr.aria-label]="'orden.copiar' | translate"
+                (click)="copiar(o.transferencia.referencia)"
+              >
+                <mat-icon>content_copy</mat-icon>
+              </button>
+            </dd>
+          </div>
+          <div>
+            <dt>{{ 'orden.monto' | translate }}</dt>
+            <dd class="num">
+              <strong>{{ pesos(o.desglose.total) }} MXN</strong>
+            </dd>
+          </div>
+          <div>
+            <dt>{{ 'orden.vence' | translate }}</dt>
+            <dd class="num">
+              {{ o.fechaExpiracion | date: 'd MMM y, HH:mm' : '' : language.current() }}
+            </dd>
+          </div>
+        </dl>
+        @if (esAdmin()) {
+          <div class="spei__reporte no-print">
+            <mat-form-field appearance="outline" class="spei__campo">
+              <mat-label>{{ 'orden.claveRastreo' | translate }}</mat-label>
+              <input matInput [formControl]="claveRastreo" maxlength="30" autocomplete="off" />
+              <mat-hint>{{ 'orden.claveRastreoHint' | translate }}</mat-hint>
+              @if (claveRastreo.invalid) {
+                <mat-error>{{ 'orden.claveRastreoError' | translate }}</mat-error>
+              }
+            </mat-form-field>
+            <button
+              mat-flat-button
+              type="button"
+              [disabled]="enviando()"
+              (click)="reportarTransferencia()"
+            >
+              {{ 'orden.yaTransferi' | translate }}
+            </button>
+          </div>
+        }
+      </section>
+    }
+
+    <div class="recibo">
+      <section class="panel recibo__cuenta">
+        <h2>{{ 'orden.detalle' | translate }}</h2>
+        <p class="recibo__concepto">
+          {{ 'orden.concepto' | translate: { plan: o.plan?.nombre } }} ·
+          {{ 'pago.' + (o.periodo === 'ANUAL' ? 'anual' : 'mensual') | translate }}
+        </p>
+        <dl class="cuenta">
+          <div>
+            <dt>{{ 'pago.subtotal' | translate }}</dt>
+            <dd class="num">{{ pesos(o.desglose.subtotal) }}</dd>
+          </div>
+          @for (d of o.desglose.descuentos; track d.concepto) {
+            <div class="cuenta__descuento">
+              <dt>{{ d.concepto }}</dt>
+              <dd class="num">-{{ pesos(d.monto) }}</dd>
+            </div>
+          }
+          <div>
+            <dt>{{ 'pago.iva' | translate }}</dt>
+            <dd class="num">{{ pesos(o.desglose.iva) }}</dd>
+          </div>
+          <div class="cuenta__total">
+            <dt>{{ 'pago.total' | translate }}</dt>
+            <dd class="num">{{ pesos(o.desglose.total) }} MXN</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section class="panel recibo__datos">
+        <h2>{{ 'orden.pago' | translate }}</h2>
+        <dl class="pares">
+          <div>
+            <dt>{{ 'orden.metodo' | translate }}</dt>
+            <dd>
+              {{ 'pago.metodo.' + o.metodo | translate }}
+              @if (o.tarjeta) {
+                <span class="num">· {{ o.tarjeta.marca }} **** {{ o.tarjeta.ultimos4 }}</span>
+              }
+            </dd>
+          </div>
+          @if (o.referenciaPago) {
+            <div>
+              <dt>
+                {{ (o.metodo === 'TARJETA' ? 'orden.cargo' : 'orden.claveRastreo') | translate }}
+              </dt>
+              <dd class="num">{{ o.referenciaPago }}</dd>
+            </div>
+          }
+          <div>
+            <dt>{{ 'orden.fecha' | translate }}</dt>
+            <dd class="num">
+              {{ o.fechaOrden | date: 'd MMM y, HH:mm' : '' : language.current() }}
+            </dd>
+          </div>
+          @if (o.fechaPago) {
+            <div>
+              <dt>{{ 'orden.fechaPago' | translate }}</dt>
+              <dd class="num">
+                {{ o.fechaPago | date: 'd MMM y, HH:mm' : '' : language.current() }}
+              </dd>
+            </div>
+          }
+          @if (o.validador) {
+            <div>
+              <dt>{{ 'orden.validadoPor' | translate }}</dt>
+              <dd>{{ o.validador }}</dd>
+            </div>
+          }
+          <div>
+            <dt>{{ 'orden.receptor' | translate }}</dt>
+            <dd>
+              {{ o.datosFiscales.razonSocial }}<br /><span class="num">{{
+                o.datosFiscales.rfc
+              }}</span>
+            </dd>
+          </div>
+        </dl>
+      </section>
+    </div>
+
+    <!-- CFDI: solo existe si la orden quedo PAGADA -->
+    @if (o.factura; as f) {
+      <section class="panel cfdi">
+        <div class="cfdi__head">
+          <mat-icon aria-hidden="true">receipt_long</mat-icon>
+          <div>
+            <h2>{{ 'orden.factura' | translate }}</h2>
+            <p>{{ 'orden.facturaSandbox' | translate }}</p>
+          </div>
+        </div>
+        <dl class="pares">
+          <div>
+            <dt>{{ 'orden.folioFiscal' | translate }}</dt>
+            <dd class="num folio-fiscal">{{ f.folioFiscal }}</dd>
+          </div>
+          <div>
+            <dt>{{ 'orden.serieFolio' | translate }}</dt>
+            <dd class="num">{{ f.serieFolio }}</dd>
+          </div>
+          <div>
+            <dt>{{ 'orden.emisor' | translate }}</dt>
+            <dd>
+              {{ f.razonSocialEmisor }} · <span class="num">{{ f.rfcEmisor }}</span>
+            </dd>
+          </div>
+          <div>
+            <dt>{{ 'orden.timbrado' | translate }}</dt>
+            <dd class="num">
+              {{ f.fechaTimbrado | date: 'd MMM y, HH:mm:ss' : '' : language.current() }}
+            </dd>
+          </div>
+        </dl>
+        <div class="cfdi__acciones no-print">
+          <button mat-stroked-button type="button" (click)="descargarXml()">
+            <mat-icon>download</mat-icon>{{ 'orden.descargarXml' | translate }}
+          </button>
+          <button mat-stroked-button type="button" (click)="imprimir()">
+            <mat-icon>print</mat-icon>{{ 'orden.imprimir' | translate }}
+          </button>
+        </div>
+      </section>
+    }
+  }
+</div>

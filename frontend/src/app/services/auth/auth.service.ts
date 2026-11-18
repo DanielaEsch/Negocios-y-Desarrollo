@@ -50,9 +50,12 @@ export class AuthService {
     return perfil !== undefined && roles.includes(perfil);
   }
 
-  /** Pantalla de inicio de cada perfil: el operador va a su turno; los demas, al tablero. */
+  /** Pantalla de inicio de cada perfil: el operador va a su turno; Cobranza, a las transferencias. */
   home(): string {
-    return this.hasRole('OPERADOR') ? '/turno' : '/tablero';
+    if (this.hasRole('OPERADOR')) {
+      return '/turno';
+    }
+    return this.hasRole('COBRANZA') ? '/cobranza' : '/tablero';
   }
 
   private restore(): Session | null {

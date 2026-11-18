@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
@@ -12,6 +12,7 @@ import { MENU_ITEMS } from '../../constants/menu';
 import { AuthService } from '../../services/auth/auth.service';
 import { LanguageService } from '../../services/language/language.service';
 import { LoadingService } from '../../services/loading/loading.service';
+import { PagoService } from '../../services/pago/pago.service';
 import { ThemeService } from '../../services/theme/theme.service';
 import { iniciales } from '../../utils/format.util';
 import { BrandComponent } from '../brand-component/brand-component';
@@ -38,8 +39,9 @@ import { BrandComponent } from '../brand-component/brand-component';
   templateUrl: './layout-component.html',
   styleUrl: './layout-component.scss',
 })
-export class LayoutComponent {
+export class LayoutComponent implements OnInit {
   protected readonly auth = inject(AuthService);
+  private readonly pagoService = inject(PagoService);
   protected readonly theme = inject(ThemeService);
   protected readonly language = inject(LanguageService);
   protected readonly loading = inject(LoadingService);
@@ -54,4 +56,18 @@ export class LayoutComponent {
     this.allItems().filter((item) => item.group === 'config'),
   );
   protected readonly initials = computed(() => iniciales(this.auth.usuario()?.nombre));
+
+  /** Aviso para el administrador mientras la suscripcion esta en prueba o vencida. */
+  protected readonly aviso = computed(() => {
+    const suscripcion = this.pagoService.suscripcionActual();
+    return this.auth.hasRole('ADMINISTRADOR') && suscripcion && suscripcion.estado !== 'ACTIVA'
+      ? suscripcion
+      : null;
+  });
+
+  ngOnInit(): void {
+    if (this.auth.hasRole('ADMINISTRADOR')) {
+      this.pagoService.suscripcion().subscribe();
+    }
+  }
 }

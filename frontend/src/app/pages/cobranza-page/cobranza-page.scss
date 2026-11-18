@@ -1,0 +1,139 @@
+.bloque {
+  margin-bottom: 28px;
+}
+
+.bloque__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  font-size: 1.15rem;
+}
+
+.contador {
+  padding: 0 10px;
+  border-radius: 999px;
+  background: var(--tk-doing-wash);
+  color: var(--tk-doing);
+  font-size: 0.9rem;
+}
+
+.vacio {
+  margin: 0;
+  color: var(--tk-ink-soft);
+}
+
+.tarjetas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 14px;
+}
+
+.deposito {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 18px 20px;
+  border-left: 6px solid var(--tk-doing);
+}
+
+.deposito__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.deposito__folio {
+  color: var(--tk-ink-soft);
+}
+
+.deposito__total {
+  font-size: 1.35rem;
+}
+
+.deposito__cliente {
+  margin: 0;
+  font-weight: 700;
+}
+
+.deposito__datos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px 16px;
+  margin: 0;
+
+  dt {
+    color: var(--tk-ink-soft);
+    font-size: 0.8rem;
+  }
+
+  dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+}
+
+.deposito__acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 6px;
+
+  mat-icon {
+    margin-right: 4px;
+  }
+}
+
+.dos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+
+  @media (max-width: 900px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.lista {
+  padding: 18px 20px;
+
+  h2 {
+    font-size: 1.05rem;
+    margin-bottom: 8px;
+  }
+
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  a {
+    display: grid;
+    grid-template-columns: 130px minmax(0, 1fr) auto;
+    gap: 4px 12px;
+    align-items: center;
+    padding: 10px 4px;
+    border-top: 1px solid var(--tk-line);
+    color: inherit;
+    text-decoration: none;
+
+    &:hover {
+      background: var(--tk-surface-sunk);
+    }
+  }
+}
+
+.lista__cliente {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lista__vence,
+.lista app-estado-pago {
+  grid-column: 2 / -1;
+  justify-self: start;
+  color: var(--tk-ink-soft);
+  font-size: 0.85rem;
+}

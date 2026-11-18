@@ -22,6 +22,7 @@ const CUENTAS_DEMO: Cuenta[] = [
   { correo: 'ana@taskin.mx', nombre: 'Ana', rol: 'OPERADOR' },
   { correo: 'jorge@taskin.mx', nombre: 'Jorge', rol: 'SUPERVISOR' },
   { correo: 'laura@taskin.mx', nombre: 'Laura', rol: 'ADMINISTRADOR' },
+  { correo: 'cobranza@taskin.mx', nombre: 'Sofia', rol: 'COBRANZA' },
 ];
 const CONTRASENA_DEMO = 'TaskIn2026';
 

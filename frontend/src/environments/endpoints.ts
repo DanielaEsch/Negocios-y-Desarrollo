@@ -11,4 +11,6 @@ export const Endpoints = {
   ejecuciones: `${environment.apiUrl}/ejecuciones`,
   incidencias: `${environment.apiUrl}/incidencias`,
   tablero: `${environment.apiUrl}/tablero`,
+  evidencias: `${environment.apiUrl}/evidencias`,
+  pagos: `${environment.apiUrl}/pagos`,
 } as const;

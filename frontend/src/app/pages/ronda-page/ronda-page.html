@@ -102,6 +102,10 @@
       </section>
     }
 
+    @if (r.estado !== 'PROGRAMADA' && r.estado !== 'CANCELADA') {
+      <app-evidencias [idRonda]="r.id" [puedeSubir]="puedeSubirFotos()" />
+    }
+
     @if (r.estado !== 'CANCELADA') {
       <div class="actions">
         @if (puedeEmpezar()) {

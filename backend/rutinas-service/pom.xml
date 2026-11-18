@@ -26,6 +26,12 @@
             <artifactId>rutinas-modelo</artifactId>
         </dependency>
 
+        <!-- Simulador de pasarela de pago (modulo aparte, se monta por autoconfiguracion) -->
+        <dependency>
+            <groupId>mx.unam.buzz</groupId>
+            <artifactId>pasarela-sandbox</artifactId>
+        </dependency>
+
         <!-- Web, validacion y persistencia -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
