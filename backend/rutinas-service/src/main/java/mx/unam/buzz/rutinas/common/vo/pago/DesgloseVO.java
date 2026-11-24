@@ -10,9 +10,9 @@ import java.util.List;
  * Algebra de la orden: Total = (Subtotal - Descuentos) + IVA.
  */
 public record DesgloseVO(
-        @Schema(example = "1490.00") BigDecimal precioMensual,
+        @Schema(example = "499.00") BigDecimal precioMensual,
         @Schema(example = "1") int meses,
-        @Schema(example = "1490.00") BigDecimal subtotal,
+        @Schema(example = "499.00") BigDecimal subtotal,
         List<LineaDescuentoVO> descuentos,
         @Schema(example = "298.00") BigDecimal descuento,
         @Schema(example = "1192.00") BigDecimal base,

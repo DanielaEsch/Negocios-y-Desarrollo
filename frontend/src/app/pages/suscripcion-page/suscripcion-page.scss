@@ -87,7 +87,7 @@
 
 .planes__grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
 
   @media (max-width: 900px) {
@@ -145,10 +145,29 @@
   font-size: 0.9rem;
 }
 
-.plan__desc {
+.plan__perks {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
   margin: 0;
+  padding: 0;
+  list-style: none;
   color: var(--tk-ink-soft);
+
+  li {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  mat-icon {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+    color: var(--tk-action);
+  }
 }
 
 .plan__cta {
@@ -157,6 +176,7 @@
 
 .historial {
   margin-top: 32px;
+  container: historial / inline-size;
   padding: 20px 24px;
 
   h2 {
@@ -177,7 +197,7 @@
 
 .fila {
   display: grid;
-  grid-template-columns: 150px minmax(0, 1fr) 150px 170px 110px 130px;
+  grid-template-columns: 140px minmax(0, 1fr) 130px 150px 110px 110px;
   align-items: center;
   gap: 12px;
   padding: 12px 4px;
@@ -220,7 +240,12 @@
   text-align: right;
 }
 
-@media (max-width: 900px) {
+// El ancho que importa es el del panel (el menu lateral le quita espacio), no el de la ventana
+@container historial (max-width: 820px) {
+  .fila {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+  }
+
   .fila__plan,
   .fila__metodo,
   .fila__fecha {

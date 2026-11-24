@@ -100,8 +100,8 @@ class PagoFlujoTest {
         facturaRepository.deleteAll();
         eventoRepository.deleteAll();
         ordenRepository.deleteAll();
-        PlanSuscripcionDO negocio = plan("NEGOCIO", "1490.00", 2);
-        plan("PRO", "2990.00", 3);
+        PlanSuscripcionDO negocio = plan("NEGOCIO", "499.00", 1);
+        plan("PRO", "1199.00", 2);
         SuscripcionDO suscripcion = suscripcionRepository.findFirstByActivoTrueOrderByIdAsc()
                 .orElseGet(SuscripcionDO::new);
         suscripcion.setIdPlan(negocio.getId());
@@ -125,20 +125,20 @@ class PagoFlujoTest {
 
     @Test
     void elServidorDictaElPrecio() throws Exception {
-        // (1490 - 20 %) + 16 % = 1192.00 + 190.72
+        // (499 - 20 %) + 16 % = 399.20 + 63.87
         perform(post("/pagos/cotizaciones"), admin, """
                 {"plan": "negocio", "periodo": "MENSUAL", "cupon": "buzz20"}""")
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.desglose.subtotal").value(1490.00))
-                .andExpect(jsonPath("$.data.desglose.descuento").value(298.00))
-                .andExpect(jsonPath("$.data.desglose.iva").value(190.72))
-                .andExpect(jsonPath("$.data.desglose.total").value(1382.72));
+                .andExpect(jsonPath("$.data.desglose.subtotal").value(499.00))
+                .andExpect(jsonPath("$.data.desglose.descuento").value(99.80))
+                .andExpect(jsonPath("$.data.desglose.iva").value(63.87))
+                .andExpect(jsonPath("$.data.desglose.total").value(463.07));
 
         // Anual: 12 meses, 2 de regalo
         perform(post("/pagos/cotizaciones"), admin, """
                 {"plan": "NEGOCIO", "periodo": "ANUAL"}""")
-                .andExpect(jsonPath("$.data.desglose.subtotal").value(17880.00))
-                .andExpect(jsonPath("$.data.desglose.total").value(17284.00));
+                .andExpect(jsonPath("$.data.desglose.subtotal").value(5988.00))
+                .andExpect(jsonPath("$.data.desglose.total").value(5788.40));
 
         // Un total mandado por el cliente no se acepta
         perform(post("/pagos/ordenes"), admin, """
@@ -166,7 +166,7 @@ class PagoFlujoTest {
                 .andExpect(jsonPath("$.data.estado").value("PROCESANDO"))
                 .andExpect(jsonPath("$.data.tarjeta.ultimos4").value("4242"));
 
-        String evento = evento("cargo.exitoso", folio, "ch_prueba", "1382.72");
+        String evento = evento("cargo.exitoso", folio, "ch_prueba", "463.07");
         webhook(evento, firmar(evento))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.resultado").value("PROCESADO"));
@@ -185,7 +185,7 @@ class PagoFlujoTest {
 
         perform(get("/pagos/facturas/" + pagada.at("/data/factura/id").asLong() + "/xml"), admin, null)
                 .andExpect(status().isOk())
-                .andExpect(content().string(org.hamcrest.Matchers.containsString("Total=\"1382.72\"")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("Total=\"463.07\"")))
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("FormaPago=\"04\"")));
     }
 
@@ -289,7 +289,7 @@ class PagoFlujoTest {
         perform(post("/pagos/cotizaciones"), admin, "{\"plan\": \"PRO\", \"periodo\": \"MENSUAL\"}")
                 .andExpect(jsonPath("$.data.desglose.descuentos[0].concepto")
                         .value("Credito por los dias no usados del plan anterior"))
-                .andExpect(jsonPath("$.data.desglose.descuento").value(1490.00));
+                .andExpect(jsonPath("$.data.desglose.descuento").value(499.00));
     }
 
     @Test

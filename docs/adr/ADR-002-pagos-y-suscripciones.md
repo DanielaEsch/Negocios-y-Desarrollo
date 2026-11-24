@@ -9,7 +9,7 @@
 TaskIn se vende como suscripción mensual a micro y pequeñas empresas, así que necesita cobrar dentro del producto. Nuestros clientes son de dos tipos: el dueño que paga con tarjeta y la empresa que solo paga por transferencia y exige factura. El cobro no puede comprometer datos de tarjetas (PCI-DSS), no puede depender de que el cliente deje abierta la pestaña y debe producir un CFDI.
 
 ## 2. Decisión
-* **Modelo de monetización**: suscripción por plan. Básico $599, Negocio $1,490 y Pro $2,990 MXN al mes más IVA; 14 días de prueba en el plan Negocio; el pago anual regala 2 meses.
+* **Modelo de monetización**: suscripción con dos planes, en MXN al mes más IVA. **Negocio** ($499) cubre un local con rutinas, rondas, incidencias, evidencias con foto y tablero del supervisor. **Pro** ($1,199) es para varias sucursales y suma factura automática y soporte prioritario. Hay 14 días de prueba en el plan Negocio, y el pago anual regala 2 meses. Con IVA, el plan Negocio queda en $578.84, dentro del rango de $500 a $5,000 que respondieron los negocios en la validación.
 * **Dos canales de la matriz de monetización**:
   * **Tarjeta (B2C)**: el formulario de la pasarela tokeniza en el navegador y a TaskIn solo llega un token de un solo uso. Guardamos únicamente la marca y los últimos 4 dígitos.
   * **Transferencia (B2B)**: TaskIn emite una orden de compra con CLABE y referencia. El cliente reporta la clave de rastreo y el perfil `COBRANZA` valida el depósito, en lugar del webhook.

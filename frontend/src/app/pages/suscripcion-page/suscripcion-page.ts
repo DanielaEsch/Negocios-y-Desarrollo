@@ -45,6 +45,14 @@ export class SuscripcionPage implements OnInit {
   }
 
   /** Lo que se ve como precio mensual: en anual, el equivalente con los meses de regalo. */
+  /** Los beneficios vienen en la descripcion del plan, separados por punto y coma. */
+  protected perks(plan: Plan): string[] {
+    return plan.descripcion
+      .split(';')
+      .map((perk) => perk.trim())
+      .filter((perk) => perk.length > 0);
+  }
+
   protected precioPorMes(plan: Plan): number {
     return this.periodo() === 'ANUAL' ? plan.precioAnual / 12 : plan.precioMensual;
   }

@@ -75,12 +75,15 @@ FROM (VALUES
 JOIN RUTINA ru ON ru.TX_NOMBRE = t.rutina AND ru.DN_ACTIVO
 WHERE NOT EXISTS (SELECT 1 FROM TAREA x WHERE x.FK_RUTINA = ru.PK_ID AND x.TX_NOMBRE = t.nombre);
 
--- Planes de TaskIn (MXN al mes, mas IVA). Anclados a lo que respondieron los
--- negocios en el formulario de validacion: la mayoria pagaria entre $500 y $5,000.
+-- Planes de TaskIn (MXN al mes, mas IVA). Dos planes: un negocio y varias sucursales.
+-- Anclados a lo que respondieron los negocios en el formulario de validacion: la mayoria
+-- pagaria entre $500 y $5,000; con IVA, el plan Negocio queda en $578.84.
+-- La descripcion lista los beneficios separados por punto y coma.
 INSERT INTO PLAN_SUSCRIPCION (TX_CLAVE, TX_NOMBRE, TX_DESCRIPCION, DN_PRECIO_MENSUAL, DN_ORDEN, DN_USUARIO_CREADOR)
-VALUES ('BASICO', 'Basico', 'Un local: rutinas, rondas e incidencias', 599.00, 1, 0),
-       ('NEGOCIO', 'Negocio', 'Todo lo basico mas evidencias con foto y tablero del supervisor', 1490.00, 2, 0),
-       ('PRO', 'Pro', 'Varias sucursales, factura automatica y soporte prioritario', 2990.00, 3, 0)
+VALUES ('NEGOCIO', 'Negocio', 'Un local; Rutinas, rondas e incidencias; Evidencias con foto; Tablero del supervisor',
+        499.00, 1, 0),
+       ('PRO', 'Pro', 'Todo lo del plan Negocio; Varias sucursales; Factura automatica; Soporte prioritario',
+        1199.00, 2, 0)
 ON CONFLICT DO NOTHING;
 
 -- El negocio arranca con 14 dias de prueba del plan Negocio.

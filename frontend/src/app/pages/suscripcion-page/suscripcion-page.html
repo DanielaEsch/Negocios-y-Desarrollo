@@ -79,7 +79,14 @@
               {{ 'suscripcion.cobroAnual' | translate: { total: pesos(plan.precioAnual) } }}
             </p>
           }
-          <p class="plan__desc">{{ plan.descripcion }}</p>
+          <ul class="plan__perks">
+            @for (perk of perks(plan); track perk) {
+              <li>
+                <mat-icon aria-hidden="true">check</mat-icon>
+                <span>{{ perk }}</span>
+              </li>
+            }
+          </ul>
           <a
             mat-flat-button
             class="plan__cta"

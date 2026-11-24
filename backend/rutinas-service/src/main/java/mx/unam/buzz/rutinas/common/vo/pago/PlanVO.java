@@ -12,7 +12,7 @@ public record PlanVO(
         @Schema(example = "NEGOCIO") String clave,
         @Schema(example = "Negocio") String nombre,
         @Schema(example = "Todo lo basico mas evidencias con foto y tablero del supervisor") String descripcion,
-        @Schema(example = "1490.00") BigDecimal precioMensual,
-        @Schema(description = "12 meses con 2 de regalo", example = "14900.00") BigDecimal precioAnual,
+        @Schema(example = "499.00") BigDecimal precioMensual,
+        @Schema(description = "12 meses con 2 de regalo", example = "4990.00") BigDecimal precioAnual,
         @Schema(description = "true si es el plan de la suscripcion actual") boolean actual) {
 }
